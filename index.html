@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+        <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -6,25 +6,18 @@
     <title>Power Star Official</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
-        :root { --accent: #2ecc71; --bg: #0f172a; --card: rgba(255, 255, 255, 0.05); }
+        :root { --accent: #2ecc71; --bg: #0f172a; --card: rgba(255, 255, 255, 0.08); }
         * { box-sizing: border-box; font-family: 'Poppins', sans-serif; margin: 0; padding: 0; }
         body { background: var(--bg); color: white; display: flex; justify-content: center; }
-        .app { width: 100%; max-width: 450px; min-height: 100vh; background: var(--bg); position: relative; border: 1px solid rgba(255,255,255,0.1); padding-bottom: 90px; }
-        
-        /* Brand Image Fix */
-        .brand-img { width: 100%; border-radius: 0 0 20px 20px; display: block; margin-bottom: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
-        .logo-main { width: 100px; height: 100px; border-radius: 50%; border: 3px solid var(--accent); margin: 30px auto 10px; display: block; }
-
-        input, select { width: 90%; margin: 10px 5%; padding: 15px; background: var(--card); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; color: white; outline: none; }
-        .btn { width: 90%; margin: 10px 5%; padding: 16px; background: linear-gradient(135deg, #2ecc71, #27ae60); color: white; border: none; border-radius: 12px; font-weight: 600; cursor: pointer; text-align: center; text-decoration: none; display: block; }
-        
-        .tab-content { display: none; padding: 15px; animation: fadeIn 0.4s; }
+        .app { width: 100%; max-width: 450px; min-height: 100vh; background: var(--bg); position: relative; padding-bottom: 90px; }
+        .brand-img { width: 100%; border-radius: 0 0 20px 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); display: block; }
+        input, select { width: 90%; margin: 8px 5%; padding: 14px; background: var(--card); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; color: white; outline: none; }
+        .btn { width: 90%; margin: 10px 5%; padding: 16px; background: linear-gradient(135deg, #2ecc71, #27ae60); color: white; border: none; border-radius: 12px; font-weight: 600; cursor: pointer; text-align: center; }
+        .tab-content { display: none; padding: 15px; animation: fadeIn 0.3s; }
         .active-tab { display: block; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        
         .bal-card { background: var(--card); padding: 25px; border-radius: 20px; text-align: center; margin: 15px; border: 1px solid var(--accent); }
-        .info-box { background: var(--card); padding: 15px; border-radius: 12px; font-size: 13px; margin: 10px; line-height: 1.6; color: #cbd5e1; }
-        
+        .task-card { background: var(--card); padding: 15px; border-radius: 12px; margin-bottom: 10px; border-left: 4px solid var(--accent); display: flex; justify-content: space-between; align-items: center; }
         .nav { position: fixed; bottom: 0; width: 100%; max-width: 450px; height: 75px; background: #1e293b; display: flex; border-top: 1px solid rgba(255,255,255,0.1); z-index: 1000; }
         .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 11px; color: #94a3b8; cursor: pointer; }
         .nav-item.active { color: var(--accent); }
@@ -34,110 +27,95 @@
 
 <div class="app">
     <div id="auth-screen" style="text-align: center; padding-top: 40px;">
-        <img src="https://i.ibb.co/LhbV4Vb/FB-IMG-1768455528784.jpg" class="logo-main">
-        <h2 style="color:var(--accent); margin-bottom:30px;">POWER STAR</h2>
-        <div id="auth-ui">
-            <input type="text" id="reg-name" placeholder="Full Name">
-            <input type="number" id="reg-phone" placeholder="WhatsApp Number">
-            <input type="password" id="reg-pass" placeholder="Password">
-            <button class="btn" onclick="handleAuth()">CONTINUE</button>
-            <p id="toggle-btn" onclick="toggleAuth()" style="font-size:12px; color:#94a3b8; margin-top:15px; cursor:pointer;">Switch to Login</p>
+        <img src="https://i.ibb.co/LhbV4Vb/FB-IMG-1768455528784.jpg" style="width:100px; border-radius:50%; border:3px solid var(--accent); margin-bottom:15px;">
+        <h2 style="color:var(--accent);">POWER STAR</h2>
+        <div id="auth-form">
+            <input type="text" id="u-name" placeholder="Full Name">
+            <input type="number" id="u-phone" placeholder="WhatsApp Number">
+            <input type="password" id="u-pass" placeholder="Password">
+            <input type="text" id="u-ref" placeholder="Referral Code (Optional)">
+            <button class="btn" onclick="handleAuth()">ENTER APP</button>
         </div>
     </div>
 
     <div id="dashboard" style="display:none;">
+        <img src="https://i.ibb.co/LhbV4Vb/FB-IMG-1768455528784.jpg" class="brand-img">
         
         <div id="tab-home" class="tab-content active-tab">
-            <img src="https://i.ibb.co/LhbV4Vb/FB-IMG-1768455528784.jpg" class="brand-img">
-            <div class="bal-card">
-                <p style="font-size:11px; color:#94a3b8;">TOTAL BALANCE</p>
-                <h1 id="user-bal" style="color:var(--accent); font-size: 32px;">Rs. 0</h1>
-            </div>
-            <div class="info-box">
-                <strong style="color:var(--accent)">English Instructions:</strong><br>
-                • Complete daily tasks to earn rewards.<br>
-                • One account per device is strictly allowed.<br>
-                • Minimum withdrawal is Rs. 300.<br>
-                • Contact Admin for task verification.
-            </div>
-            <a href="https://whatsapp.com/channel/0029VbBtlLd29752E8E2z10W" class="btn" style="background:#25d366;">WHATSAPP CHANNEL</a>
+            <div class="bal-card"><p style="font-size:11px;">CURRENT BALANCE</p><h1 id="user-bal" style="color:var(--accent);">Rs. 0</h1></div>
+            <h4 style="margin: 10px 5%; color: var(--accent);">Available Tasks</h4>
+            <div class="task-card"><span>Facebook Like</span> <strong>Rs. 20</strong></div>
+            <div class="task-card"><span>YouTube Sub</span> <strong>Rs. 30</strong></div>
+            <div class="task-card"><span>TikTok Follow</span> <strong>Rs. 25</strong></div>
         </div>
 
         <div id="tab-about" class="tab-content">
-            <h3 style="color:var(--accent); margin-bottom:15px;">About Us</h3>
-            <p class="info-box">Power Star is a professional digital marketing platform. We provide legitimate earning opportunities through social media tasks.</p>
-            <h3 style="color:var(--accent); margin-bottom:15px;">Security</h3>
-            <p class="info-box">We use secure cloud storage to protect your data. Your privacy and security are our top priorities.</p>
-        </div>
-
-        <div id="tab-team" class="tab-content">
-            <h3>Referral Link</h3>
-            <div class="info-box" style="border:1px dashed var(--accent);">
-                <p style="font-size:11px; color:#94a3b8;">Share with your team:</p>
-                <p id="ref-link" style="font-size:10px; word-break:break-all; color:var(--accent);"></p>
+            <h3 style="color:var(--accent); margin-bottom:15px;">App Info & Rules</h3>
+            <div style="background:var(--card); padding:15px; border-radius:12px; font-size:13px; line-height:1.6;">
+                - Minimum withdrawal: Rs. 300.<br>
+                - One account per mobile device.<br>
+                - Submit screenshots for task approval.<br><br>
+                <strong>Official Links:</strong><br>
+                <a href="https://whatsapp.com/channel/0029VbBtlLd29752E8E2z10W" style="color:var(--accent); text-decoration:none;">Join WhatsApp Group ↗️</a>
             </div>
-            <button class="btn" style="background:#ef4444; margin-top:50px;" onclick="logout()">LOGOUT</button>
         </div>
 
         <div id="tab-wallet" class="tab-content">
-            <h3>Wallet Binding</h3>
+            <h3 style="margin-bottom:15px;">Account Binding</h3>
             <div id="bind-box">
                 <input type="text" id="b-title" placeholder="Account Holder Name">
                 <select id="b-method"><option>EasyPaisa</option><option>JazzCash</option></select>
-                <input type="number" id="b-number" placeholder="Account Number">
-                <button class="btn" onclick="saveBinding()">BIND ACCOUNT</button>
+                <input type="number" id="b-num" placeholder="Account Number">
+                <button class="btn" onclick="saveBinding()">SAVE BINDING</button>
             </div>
             <div id="wd-box" style="display:none; text-align:center;">
-                <div id="acc-saved" style="padding:20px; background:rgba(46,204,113,0.1); color:var(--accent); border-radius:15px; border:1px solid var(--accent);"></div>
+                <div id="acc-details" style="background:rgba(46,204,113,0.1); padding:20px; border-radius:12px; color:var(--accent); border:1px solid var(--accent);"></div>
                 <input type="number" placeholder="Enter Amount" style="margin-top:20px;">
-                <button class="btn" onclick="alert('Withdrawal request sent!')">WITHDRAW</button>
+                <button class="btn" onclick="alert('Sent!')">WITHDRAW</button>
             </div>
+        </div>
+
+        <div id="tab-team" class="tab-content">
+            <h3>My Team</h3>
+            <div style="background:var(--card); padding:15px; border-radius:10px; margin-top:15px;">
+                <p style="font-size:11px; color:#94a3b8;">Referral Link:</p>
+                <p id="ref-link" style="font-size:10px; color:var(--accent); word-break:break-all;"></p>
+            </div>
+            <button class="btn" style="background:#ef4444; margin-top:60px;" onclick="logout()">LOGOUT</button>
         </div>
 
         <nav class="nav">
             <div class="nav-item active" onclick="tab('tab-home', this)">🏠<span>Home</span></div>
             <div class="nav-item" onclick="tab('tab-about', this)">ℹ️<span>About</span></div>
-            <div class="nav-item" onclick="tab('tab-team', this)">👥<span>Team</span></div>
             <div class="nav-item" onclick="tab('tab-wallet', this)">💰<span>Wallet</span></div>
+            <div class="nav-item" onclick="tab('tab-team', this)">👥<span>Team</span></div>
         </nav>
     </div>
 </div>
 
 <script>
     const API = "https://sheetdb.io/api/v1/fz1504ko2kdts";
-    let isLogin = false;
     let myPh = localStorage.getItem('ps_ph') || "";
 
-    if(myPh) showDashboard(myPh);
-
-    function toggleAuth() {
-        isLogin = !isLogin;
-        document.getElementById('reg-name').style.display = isLogin ? 'none' : 'block';
-        document.getElementById('toggle-btn').innerText = isLogin ? "New? Register" : "Member? Login";
-    }
+    if(myPh) showDash(myPh);
 
     async function handleAuth() {
-        const ph = document.getElementById('reg-phone').value;
-        const ps = document.getElementById('reg-pass').value;
-        const nm = document.getElementById('reg-name').value;
-        if(!ph || !ps) return alert("Fill all fields!");
-
+        const ph = document.getElementById('u-phone').value, ps = document.getElementById('u-pass').value, nm = document.getElementById('u-name').value, rf = document.getElementById('u-ref').value;
+        if(!ph || !ps) return alert("Fill data!");
         try {
             const res = await fetch(`${API}/search?Phone=${ph}`);
             const data = await res.json();
-
-            if(!isLogin) {
-                if(data.some(u => u.Action === "REGISTRATION")) return alert("Already registered!");
-                await fetch(API, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({data:[{Phone: ph, Password: ps, "Full Name": nm, Action: "REGISTRATION", Balance: "0", Date: new Date().toLocaleString()}]}) });
-                showDashboard(ph);
+            const reg = data.find(u => u.Action === "REGISTRATION");
+            if(reg) {
+                if(String(reg.Password) === String(ps)) showDash(ph); else alert("Wrong Pass!");
             } else {
-                const user = data.find(u => u.Action === "REGISTRATION" && String(u.Password) === String(ps));
-                if(user) showDashboard(ph); else alert("Invalid Login!");
+                await fetch(API, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({data:[{Phone:ph, Password:ps, "Full Name":nm, Referral:rf, Action:"REGISTRATION", Balance:"0"}]}) });
+                showDash(ph);
             }
-        } catch(e) { alert("Error connecting server!"); }
+        } catch(e) { alert("API Error!"); }
     }
 
-    function showDashboard(ph) {
+    function showDash(ph) {
         myPh = ph; localStorage.setItem('ps_ph', ph);
         document.getElementById('auth-screen').style.display = 'none';
         document.getElementById('dashboard').style.display = 'block';
@@ -146,7 +124,6 @@
     }
 
     async function sync() {
-        if(!myPh) return;
         const res = await fetch(`${API}/search?Phone=${myPh}`);
         const data = await res.json();
         const reg = data.find(u => u.Action === "REGISTRATION");
@@ -155,14 +132,14 @@
         if(bnd) {
             document.getElementById('bind-box').style.display = 'none';
             document.getElementById('wd-box').style.display = 'block';
-            document.getElementById('acc-saved').innerText = "Bound: " + bnd.Extra_Info;
+            document.getElementById('acc-details').innerText = "Linked: " + bnd.Extra_Info;
         }
     }
 
     async function saveBinding() {
-        const info = document.getElementById('b-method').value + ": " + document.getElementById('b-number').value + " (" + document.getElementById('b-title').value + ")";
-        await fetch(API, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({data:[{Phone: myPh, Action: "BINDING", Extra_Info: info, Date: new Date().toLocaleString()}]}) });
-        alert("Wallet Bound!"); sync();
+        const info = document.getElementById('b-method').value + ": " + document.getElementById('b-num').value + " (" + document.getElementById('b-title').value + ")";
+        await fetch(API, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({data:[{Phone: myPh, Action: "BINDING", Extra_Info: info}]}) });
+        alert("Success!"); sync();
     }
 
     function tab(t, el) {
@@ -171,7 +148,7 @@
         document.getElementById(t).classList.add('active-tab'); el.classList.add('active');
         sync();
     }
-    function logout() { localStorage.removeItem('ps_ph'); location.reload(); }
+    function logout() { localStorage.clear(); location.reload(); }
 </script>
 </body>
 </html>
