@@ -3,241 +3,225 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Power Star - Final Fix</title>
+    <title>Power Star Official</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
     <style>
-        :root { --green: #2ecc71; --bg: #0b1120; --card: rgba(255, 255, 255, 0.05); }
-        * { box-sizing: border-box; font-family: 'Poppins', sans-serif; }
-        body { margin: 0; background: var(--bg); color: white; display: flex; justify-content: center; }
+        :root { --accent: #2ecc71; --bg: #0f172a; --card: rgba(255, 255, 255, 0.05); }
+        * { box-sizing: border-box; font-family: 'Poppins', sans-serif; transition: 0.3s; }
+        body { margin: 0; background: var(--bg); color: white; display: flex; justify-content: center; overflow-x: hidden; }
         .app { width: 100%; max-width: 450px; min-height: 100vh; background: var(--bg); position: relative; border: 1px solid rgba(255,255,255,0.1); padding-bottom: 90px; }
-        input, select { width: 100%; padding: 16px; background: var(--card); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; color: white; margin-bottom: 15px; outline: none; font-size: 14px; }
-        .btn { width: 100%; padding: 16px; background: linear-gradient(135deg, #2ecc71, #27ae60); color: white; border: none; border-radius: 12px; font-weight: 600; cursor: pointer; display: block; text-align: center; text-decoration: none; box-shadow: 0 4px 15px rgba(46, 204, 113, 0.3); }
+        input, select { width: 100%; padding: 16px; background: var(--card); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; color: white; margin-bottom: 15px; outline: none; }
+        .btn { width: 100%; padding: 16px; background: linear-gradient(135deg, #2ecc71, #27ae60); color: white; border: none; border-radius: 12px; font-weight: 600; cursor: pointer; text-align: center; display: block; text-decoration: none; width: 100%; }
         #dashboard { display: none; }
         .tab-content { display: none; padding: 20px; animation: fadeIn 0.4s; }
         .active-tab { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .bal-card { background: linear-gradient(180deg, rgba(46,204,113,0.1) 0%, rgba(11,17,32,1) 100%); padding: 40px 20px; border-radius: 25px; text-align: center; margin: 20px; border: 1px solid rgba(255,255,255,0.05); }
-        .nav { position: fixed; bottom: 0; width: 100%; max-width: 450px; height: 75px; background: #0b1120; display: flex; border-top: 1px solid rgba(255,255,255,0.1); z-index: 1000; }
-        .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 11px; color: #64748b; cursor: pointer; }
-        .nav-item.active { color: var(--green); }
-        .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #0b1120; z-index: 2000; padding: 30px; overflow-y: auto; }
-        .status-badge { background: rgba(46,204,113,0.1); color: var(--green); padding: 8px 15px; border-radius: 20px; font-size: 12px; display: inline-block; margin-bottom: 10px; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .bal-card { background: var(--card); padding: 30px; border-radius: 20px; text-align: center; margin: 20px; border: 1px solid rgba(255,255,255,0.1); }
+        .task-card { background: var(--card); padding: 15px; border-radius: 15px; border-left: 5px solid var(--accent); margin-top: 15px; position: relative; }
+        .nav { position: fixed; bottom: 0; width: 100%; max-width: 450px; height: 75px; background: #1e293b; display: flex; border-top: 1px solid rgba(255,255,255,0.1); z-index: 1000; }
+        .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 11px; color: #94a3b8; cursor: pointer; }
+        .nav-item.active { color: var(--accent); }
+        .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #0f172a; z-index: 2000; padding: 30px; overflow-y: auto; }
+        .logout-btn { background: #e74c3c !important; margin-top: 20px; font-size: 14px; }
     </style>
 </head>
 <body>
 
 <div class="app">
-    <div id="auth" style="padding:60px 25px; text-align:center;">
-        <img src="https://i.ibb.co/LhbV4Vb/FB-IMG-1768455528784.jpg" onerror="this.src='https://via.placeholder.com/120?text=PowerStar'" style="width:120px; border-radius:50%; margin-bottom:25px; border:3px solid var(--green);">
-        <h2 style="color:var(--green); letter-spacing: 1px;">POWER STAR OFFICIAL</h2>
+    <div id="auth-screen" style="padding:50px 25px; text-align:center;">
+        <img src="https://i.ibb.co/LhbV4Vb/FB-IMG-1768455528784.jpg" style="width:110px; border-radius:50%; border:3px solid var(--accent); margin-bottom:20px;">
+        <h2 style="color:var(--accent);">POWER STAR</h2>
         <div id="reg-box">
             <input type="text" id="r-name" placeholder="Full Name">
             <input type="number" id="r-phone" placeholder="WhatsApp Number">
             <input type="password" id="r-pass" placeholder="Password">
-            <button class="btn" onclick="auth('reg')">GET STARTED</button>
-            <p onclick="toggle(true)" style="margin-top:20px; cursor:pointer; color:#64748b; font-size:14px;">Already a member? <span style="color:var(--green)">Login</span></p>
+            <input type="text" id="r-ref" placeholder="Referral Code (Optional)">
+            <button class="btn" onclick="authAction('reg')">CREATE ACCOUNT</button>
+            <p onclick="toggleAuth(true)" style="margin-top:20px; cursor:pointer; color:#94a3b8;">Member? <span style="color:var(--accent)">Login</span></p>
         </div>
         <div id="log-box" style="display:none;">
-            <input type="number" id="l-phone" placeholder="Phone Number">
+            <input type="number" id="l-phone" placeholder="WhatsApp Number">
             <input type="password" id="l-pass" placeholder="Password">
-            <button class="btn" onclick="auth('login')">LOGIN NOW</button>
-            <p onclick="toggle(false)" style="margin-top:20px; cursor:pointer; color:#64748b; font-size:14px;">New member? <span style="color:var(--green)">Register</span></p>
+            <button class="btn" onclick="authAction('login')">LOGIN</button>
+            <p onclick="toggleAuth(false)" style="margin-top:20px; cursor:pointer; color:#94a3b8;">New? <span style="color:var(--accent)">Register</span></p>
         </div>
     </div>
 
     <div id="dashboard">
-        <div id="news-bar" style="background:var(--green); color:#000; padding:10px; text-align:center; font-size:12px; font-weight:600;">Welcome back to Power Star!</div>
-        
+        <div id="news-bar" style="background:rgba(46,204,113,0.1); color:var(--accent); padding:10px; text-align:center; font-size:12px;">Welcome to Power Star Official!</div>
         <div class="bal-card">
-            <span style="font-size: 12px; color:#64748b; text-transform: uppercase; letter-spacing: 1px;">Wallet Balance</span>
-            <h1 id="bal-text" style="color:var(--green); margin:15px 0; font-size: 42px;">Rs. 0.00</h1>
+            <p style="font-size:11px; color:#94a3b8; margin:0;">TOTAL BALANCE</p>
+            <h1 id="main-bal" style="color:var(--accent); margin:10px 0; font-size:35px;">Rs. 0.00</h1>
         </div>
 
         <div id="tab-home" class="tab-content active-tab">
-            <img id="banner-img" src="https://i.ibb.co/LhbV4Vb/FB-IMG-1768455528784.jpg" onerror="this.src='https://via.placeholder.com/400x200?text=Power+Star+Banner'" style="width:100%; border-radius:15px; border:1px solid rgba(255,255,255,0.1);">
-            <div id="tasks-list" style="margin-top:20px;"></div>
+            <img id="app-banner" src="https://i.ibb.co/LhbV4Vb/FB-IMG-1768455528784.jpg" style="width:100%; border-radius:15px; margin-bottom:20px; border:1px solid var(--accent);">
+            <div id="tasks-list"></div>
         </div>
 
         <div id="tab-about" class="tab-content">
-            <div class="status-badge">App Information</div>
-            <h3 style="margin-top:0;">Earning Instructions</h3>
-            <p style="font-size:14px; color:#94a3b8; line-height:1.7;">Complete simple daily tasks. Each task reward is credited after manual verification of your proof. <br><br><b>Withdrawal Limit:</b> Rs. 300</p>
-            <a href="https://whatsapp.com/channel/0029VbBtlLd29752E8E2z10W" class="btn" style="background:#25d366; margin-top:10px;">Official WhatsApp Channel</a>
+            <h3 style="color:var(--accent)">Instructions</h3>
+            <div style="background:var(--card); padding:15px; border-radius:12px; font-size:13px; line-height:1.7;">
+                1. Pick any task from Home.<br>2. Complete the social media action.<br>3. Send screenshot to Admin.<br>4. Payment updates within 24 hours.
+            </div>
+            <a href="https://whatsapp.com/channel/0029VbBtlLd29752E8E2z10W" class="btn" style="background:#25d366; margin-top:20px;">Join Official Channel</a>
         </div>
 
         <div id="tab-team" class="tab-content">
-            <h3 style="color:var(--green)">Referral Center</h3>
-            <div id="ref-box" style="padding:20px; background:var(--card); border:1px dashed var(--green); border-radius:15px; font-size:11px; margin-bottom:15px; word-break:break-all; text-align:center;">Link loading...</div>
-            <button class="btn" onclick="copyLink()">COPY INVITE LINK</button>
-            <div style="text-align:center; margin-top:40px;">
-                <span style="color:#64748b; font-size:12px;">Total Referrals</span>
-                <h2 id="team-size" style="color:var(--green); margin:5px 0; font-size:32px;">0</h2>
-            </div>
+            <h3 style="color:var(--accent)">Refer & Earn</h3>
+            <div id="my-ref-link" style="padding:15px; background:var(--card); border:1px dashed var(--accent); border-radius:10px; font-size:11px; word-break:break-all; margin-bottom:15px;">Loading...</div>
+            <button class="btn" onclick="copyRef()">COPY LINK</button>
+            <h2 style="text-align:center; margin-top:25px;">Team Size: <span id="team-count" style="color:var(--accent);">0</span></h2>
+            <button class="btn logout-btn" onclick="doLogout()">LOGOUT</button>
         </div>
 
         <div id="tab-wallet" class="tab-content">
-            <h3 onclick="adminCheck()" style="color:var(--green); cursor:pointer;">Withdrawal Setup</h3>
-            <div id="bind-form">
-                <input type="text" id="bn-name" placeholder="Account Holder Name">
-                <select id="bn-type"><option>EasyPaisa</option><option>JazzCash</option></select>
-                <input type="number" id="bn-num" placeholder="Account Number">
-                <button class="btn" onclick="saveWallet()">BIND ACCOUNT</button>
+            <h3 onclick="openAdmin()" style="cursor:pointer; color:var(--accent);">Wallet Binding</h3>
+            <div id="bind-ui">
+                <input type="text" id="w-name" placeholder="Account Name">
+                <select id="w-method"><option>EasyPaisa</option><option>JazzCash</option></select>
+                <input type="number" id="w-number" placeholder="Account Number">
+                <button class="btn" onclick="bindWallet()">SAVE WALLET</button>
             </div>
-            <div id="withdraw-form" style="display:none;">
-                <div id="saved-details" style="background:var(--card); padding:20px; border-radius:15px; color:var(--green); text-align:center; border:1px solid rgba(46,204,113,0.3); margin-bottom:25px;"></div>
-                <input type="number" id="wd-amt" placeholder="Amount (Min 300)">
-                <button class="btn" onclick="submitWD()">SUBMIT WITHDRAWAL</button>
+            <div id="withdraw-ui" style="display:none;">
+                <div id="wallet-info" style="background:rgba(46,204,113,0.1); padding:20px; border-radius:15px; border:1px solid var(--accent); text-align:center; color:var(--accent); margin-bottom:20px;"></div>
+                <input type="number" id="wd-amt" placeholder="Min 300">
+                <button class="btn" onclick="sendWd()">WITHDRAW</button>
             </div>
         </div>
 
         <nav class="nav">
-            <div class="nav-item active" onclick="nav('tab-home', this)">🏠<span>Home</span></div>
-            <div class="nav-item" onclick="nav('tab-about', this)">ℹ️<span>About</span></div>
-            <div class="nav-item" onclick="nav('tab-team', this)">👥<span>Team</span></div>
-            <div class="nav-item" onclick="nav('tab-wallet', this)">💰<span>Wallet</span></div>
+            <div class="nav-item active" onclick="tab('tab-home', this)">🏠<span>Home</span></div>
+            <div class="nav-item" onclick="tab('tab-about', this)">ℹ️<span>About</span></div>
+            <div class="nav-item" onclick="tab('tab-team', this)">👥<span>Team</span></div>
+            <div class="nav-item" onclick="tab('tab-wallet', this)">💰<span>Wallet</span></div>
         </nav>
     </div>
 
-    <div id="adm-overlay" class="overlay">
-        <h3>Admin Panel</h3>
-        <input type="text" id="a-news" placeholder="Global News Text">
-        <input type="text" id="a-banner" placeholder="Banner Image URL">
+    <div id="admin-panel" class="overlay">
+        <h3>Admin Controls</h3>
+        <input type="text" id="adm-news" placeholder="Update News">
+        <input type="text" id="adm-banner" placeholder="Update Banner URL">
         <hr style="opacity:0.1; margin:20px 0;">
-        <input type="text" id="a-title" placeholder="Task Name">
-        <input type="text" id="a-price" placeholder="Task Reward Rs.">
-        <input type="text" id="a-link" placeholder="Task Social Link">
-        <button class="btn" onclick="postAdmin()">UPDATE SYSTEM</button>
-        <button onclick="closeOv('adm-overlay')" style="color:#64748b; background:none; border:none; width:100%; margin-top:25px; cursor:pointer;">← Go Back</button>
-    </div>
-
-    <div id="sub-overlay" class="overlay">
-        <h3 id="target-task">Task Verification</h3>
-        <p style="font-size:12px; color:#64748b;">Upload screenshot proof of your task completion.</p>
-        <input type="file" id="p-file" accept="image/*">
-        <input type="text" id="p-comment" placeholder="Your Username/ID">
-        <button id="p-btn" class="btn" onclick="submitProof()">SUBMIT FOR REVIEW</button>
-        <button onclick="closeOv('sub-overlay')" style="color:#64748b; background:none; border:none; width:100%; margin-top:25px; cursor:pointer;">Cancel</button>
+        <input type="text" id="adm-t-title" placeholder="Task Name">
+        <input type="text" id="adm-t-rs" placeholder="Task Reward">
+        <input type="text" id="adm-t-url" placeholder="Task Link">
+        <button class="btn" onclick="adminPost()">UPDATE SYSTEM</button>
+        <button onclick="closeOv('admin-panel')" style="color:white; background:none; border:none; width:100%; margin-top:20px;">Close</button>
     </div>
 </div>
 
 <script>
-    let userPhone = "";
-    const DB = "https://sheetdb.io/api/v1/h0yk6frxj1bdg";
-    const IMG_API = "7d44869894e6378e906c6463406283b7";
+    const API = "https://sheetdb.io/api/v1/fz1504ko2kdts";
+    let userPhone = localStorage.getItem('ps_session') || "";
 
-    function toggle(isLog) {
-        document.getElementById('reg-box').style.display = isLog ? "none" : "block";
-        document.getElementById('log-box').style.display = isLog ? "block" : "none";
-    }
+    window.onload = () => { if(userPhone) { showDash(userPhone); } };
 
-    async function auth(type) {
-        const ph = (type==='reg')?document.getElementById('r-phone').value:document.getElementById('l-phone').value;
-        const ps = (type==='reg')?document.getElementById('r-pass').value:document.getElementById('l-pass').value;
-        if(!ph || !ps) return alert("All fields are required!");
+    async function authAction(mode) {
+        const ph = mode === 'reg' ? document.getElementById('r-phone').value : document.getElementById('l-phone').value;
+        const ps = mode === 'reg' ? document.getElementById('r-pass').value : document.getElementById('l-pass').value;
+        if(!ph || !ps) return alert("Fill all fields!");
+
+        if(mode === 'reg' && localStorage.getItem('ps_lock')) return alert("One device = One account!");
 
         try {
-            const res = await fetch(`${DB}/search?phone=${ph}`);
+            const res = await fetch(`${API}/search?Phone=${ph}`);
             const data = await res.json();
-            
-            if(type==='reg') {
-                if(data.length > 0) return alert("Account already registered!");
-                const d = { phone: ph, password: ps, acc_name: document.getElementById('r-name').value, balance: "0", type_action: "REGISTRATION", date: new Date().toLocaleString(), status: "Member" };
-                await fetch(DB, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({data:[d]}) });
+
+            if(mode === 'reg') {
+                if(data.length > 0) return alert("Phone already exists!");
+                const u = { Phone: ph, Password: ps, "Full Name": document.getElementById('r-name').value, Referral: document.getElementById('r-ref').value || "Direct", Balance: "0", Action: "REGISTRATION", Date: new Date().toLocaleString() };
+                await fetch(API, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({data:[u]}) });
+                localStorage.setItem('ps_lock', 'true');
             } else {
-                if(data.length === 0 || data[0].password !== ps) return alert("Invalid phone or password!");
+                const found = data.find(i => i.Action === "REGISTRATION");
+                if(!found || found.Password !== ps) return alert("Wrong details!");
             }
-            userPhone = ph;
-            document.getElementById('auth').style.display = 'none';
-            document.getElementById('dashboard').style.display = 'block';
-            document.getElementById('ref-box').innerText = window.location.href.split('?')[0] + "?ref=" + ph;
-            refresh();
-        } catch(e) { alert("Network error! Try again."); }
+            showDash(ph);
+        } catch(e) { alert("Server Error!"); }
     }
 
-    async function refresh() {
+    function showDash(ph) {
+        userPhone = ph;
+        localStorage.setItem('ps_session', ph);
+        document.getElementById('auth-screen').style.display = 'none';
+        document.getElementById('dashboard').style.display = 'block';
+        document.getElementById('my-ref-link').innerText = window.location.href.split('?')[0] + "?ref=" + ph;
+        refreshData();
+    }
+
+    async function refreshData() {
         if(!userPhone) return;
         try {
-            const res = await fetch(`${DB}/search?phone=${userPhone}`);
+            const res = await fetch(`${API}/search?Phone=${userPhone}`);
             const data = await res.json();
-            
-            const main = data.find(i => i.type_action === "REGISTRATION");
-            if(main) document.getElementById('bal-text').innerText = "Rs. " + (parseFloat(main.balance).toFixed(2) || "0.00");
-            
-            const bnd = data.find(i => i.type_action === "ACCOUNT_BIND");
+
+            const reg = data.find(i => i.Action === "REGISTRATION");
+            if(reg) document.getElementById('main-bal').innerText = "Rs. " + (reg.Balance || "0.00");
+
+            const bnd = data.find(i => i.Action === "BINDING");
             if(bnd) {
-                document.getElementById('bind-form').style.display = 'none';
-                document.getElementById('withdraw-form').style.display = 'block';
-                document.getElementById('saved-details').innerHTML = `<small>Linked Wallet</small><br><b>${bnd.acc_type}</b><br>${bnd.acc_num}`;
+                document.getElementById('bind-ui').style.display = 'none';
+                document.getElementById('withdraw-ui').style.display = 'block';
+                document.getElementById('wallet-info').innerText = bnd.Extra_Info;
             }
 
-            const sets = await (await fetch(`${DB}/search?type_action=ADMIN_SETTING`)).json();
-            if(sets.length > 0) {
-                const last = sets[sets.length-1];
-                document.getElementById('news-bar').innerText = last.status || "Power Star Official";
-                if(last.acc_name) document.getElementById('banner-img').src = last.acc_name;
+            const team = await (await fetch(`${API}/search?Referral=${userPhone}`)).json();
+            document.getElementById('team-count').innerText = team.length;
+
+            const config = await (await fetch(`${API}/search?Action=CONFIG`)).json();
+            if(config.length > 0) {
+                const last = config[config.length-1];
+                document.getElementById('news-bar').innerText = last.Extra_Info || "System Online";
+                if(last.Password) document.getElementById('app-banner').src = last.Password;
             }
 
-            const taskRes = await (await fetch(`${DB}/search?type_action=TASK_POST`)).json();
+            const tasks = await (await fetch(`${API}/search?Action=TASK`)).json();
             const list = document.getElementById('tasks-list');
             list.innerHTML = "";
-            taskRes.reverse().forEach(t => {
-                const div = document.createElement('div');
-                div.style = "background:var(--card); padding:20px; border-radius:15px; margin-bottom:15px; border:1px solid rgba(255,255,255,0.05); text-align:center;";
-                div.innerHTML = `<div style='color:var(--green); font-size:12px; margin-bottom:5px;'>Daily Reward: Rs. ${t.date}</div><h4 style='margin:0 0 15px 0;'>${t.status}</h4><div style='display:grid; grid-template-columns:1fr 1fr; gap:10px;'><button class='btn' style='padding:10px; font-size:12px; background:rgba(255,255,255,0.1);' onclick="window.open('${t.acc_num}')">GO TO TASK</button><button class='btn' style='padding:10px; font-size:12px;' onclick="openSub('${t.status}')">SUBMIT PROOF</button></div>`;
+            tasks.reverse().forEach(t => {
+                const div = document.createElement('div'); div.className="task-card";
+                div.innerHTML = `<h4>${t.Phone}</h4><p style="color:var(--accent);font-weight:bold;">Reward: Rs. ${t.Password}</p><button class="btn" style="padding:10px;" onclick="window.open('${t.Date}')">OPEN TASK</button>`;
                 list.appendChild(div);
             });
-        } catch(e) { console.log("Refresh error"); }
+        } catch(e) {}
     }
 
-    async function saveWallet() {
-        const d = { phone: userPhone, acc_name: document.getElementById('bn-name').value, acc_type: document.getElementById('bn-type').value, acc_num: document.getElementById('bn-num').value, type_action: "ACCOUNT_BIND" };
-        if(!d.acc_name || !d.acc_num) return alert("Fill all details!");
-        await fetch(DB, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({data:[d]}) });
-        alert("Wallet Bound Successfully!");
-        refresh();
+    async function bindWallet() {
+        const info = document.getElementById('w-method').value + " - " + document.getElementById('w-number').value + " (" + document.getElementById('w-name').value + ")";
+        const d = { Phone: userPhone, Action: "BINDING", Extra_Info: info, Date: new Date().toLocaleString() };
+        await fetch(API, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({data:[d]}) });
+        alert("Wallet Saved!"); refreshData();
     }
 
-    async function submitWD() {
+    async function sendWd() {
         const amt = document.getElementById('wd-amt').value;
-        if(amt < 300) return alert("Minimum withdrawal is Rs. 300!");
-        const d = { phone: userPhone, withdraw_amount: amt, status: "Pending", type_action: "WITHDRAWAL", date: new Date().toLocaleString() };
-        await fetch(DB, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({data:[d]}) });
-        alert("Withdrawal request submitted!");
+        if(amt < 300) return alert("Min 300!");
+        const d = { Phone: userPhone, Balance: amt, Action: "WITHDRAWAL", Date: new Date().toLocaleString(), Extra_Info: "Pending" };
+        await fetch(API, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({data:[d]}) });
+        alert("Requested!");
     }
 
-    function nav(id, el) {
+    function tab(id, el) {
         document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active-tab'));
         document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
         document.getElementById(id).classList.add('active-tab'); el.classList.add('active');
-        refresh();
+        refreshData();
     }
-
-    function copyLink() { navigator.clipboard.writeText(document.getElementById('ref-box').innerText); alert("Link Copied!"); }
-    function adminCheck() { if(prompt("Admin Access PIN:") === "Hussain@2025") document.getElementById('adm-overlay').style.display = 'block'; }
+    function toggleAuth(log) {
+        document.getElementById('reg-box').style.display = log ? 'none' : 'block';
+        document.getElementById('log-box').style.display = log ? 'block' : 'none';
+    }
+    function doLogout() { localStorage.removeItem('ps_session'); location.reload(); }
+    function copyRef() { navigator.clipboard.writeText(document.getElementById('my-ref-link').innerText); alert("Copied!"); }
+    function openAdmin() { if(prompt("PIN:") === "Hussain@2025") document.getElementById('admin-panel').style.display = 'block'; }
     function closeOv(id) { document.getElementById(id).style.display = 'none'; }
-    function openSub(t) { document.getElementById('target-task').innerText = t; document.getElementById('sub-overlay').style.display = 'block'; }
 
-    async function submitProof() {
-        const file = document.getElementById('p-file').files[0];
-        if(!file) return alert("Please select a screenshot!");
-        const btn = document.getElementById('p-btn'); btn.innerText = "Uploading..."; btn.disabled = true;
-        
-        try {
-            const fd = new FormData(); fd.append("image", file);
-            const imgRes = await fetch(`https://api.imgbb.com/1/upload?key=${IMG_API}`, { method: "POST", body: fd });
-            const imgData = await imgRes.json();
-            const sub = { phone: userPhone, status: "Pending", type_action: "TASK_SUBMISSION", acc_name: document.getElementById('target-task').innerText, acc_num: imgData.data.url, date: document.getElementById('p-comment').value };
-            await fetch(DB, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({data:[sub]}) });
-            alert("Proof submitted successfully!"); closeOv('sub-overlay');
-        } catch(e) { alert("Upload failed!"); }
-        btn.innerText = "SUBMIT FOR REVIEW"; btn.disabled = false;
-    }
-
-    async function postAdmin() {
-        const news = { phone: "ADMIN", acc_name: document.getElementById('a-banner').value, status: document.getElementById('a-news').value, type_action: "ADMIN_SETTING" };
-        const task = { phone: "ADMIN", status: document.getElementById('a-title').value, acc_num: document.getElementById('a-link').value, date: document.getElementById('a-price').value, type_action: "TASK_POST" };
-        await fetch(DB, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({data:[news, task]}) });
-        alert("System Updated!"); closeOv('adm-overlay'); refresh();
+    async function adminPost() {
+        const c = { Phone: "ADMIN", Password: document.getElementById('adm-banner').value, Action: "CONFIG", Extra_Info: document.getElementById('adm-news').value };
+        const t = { Phone: document.getElementById('adm-t-title').value, Password: document.getElementById('adm-t-rs').value, Date: document.getElementById('adm-t-url').value, Action: "TASK" };
+        await fetch(API, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({data:[c, t]}) });
+        alert("Updated!"); closeOv('admin-panel'); refreshData();
     }
 </script>
 </body>
