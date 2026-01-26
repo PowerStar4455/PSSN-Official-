@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Power Star - Final Official</title>
+    <title>Power Star - Official</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
     <style>
         :root { --accent: #2ecc71; --bg: #0f172a; --card: rgba(255, 255, 255, 0.08); }
         * { box-sizing: border-box; font-family: 'Poppins', sans-serif; transition: 0.3s; }
-        body { margin: 0; background: var(--bg); color: white; display: flex; justify-content: center; overflow-x: hidden; }
+        body { margin: 0; background: var(--bg); color: white; display: flex; justify-content: center; }
         .app { width: 100%; max-width: 450px; min-height: 100vh; background: var(--bg); position: relative; border: 1px solid rgba(255,255,255,0.1); padding-bottom: 90px; }
         input, select { width: 100%; padding: 16px; background: var(--card); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; color: white; margin-bottom: 15px; outline: none; }
         .btn { width: 100%; padding: 16px; background: linear-gradient(135deg, #2ecc71, #27ae60); color: white; border: none; border-radius: 12px; font-weight: 600; cursor: pointer; text-align: center; display: block; width: 100%; }
@@ -20,65 +20,60 @@
         .nav { position: fixed; bottom: 0; width: 100%; max-width: 450px; height: 75px; background: #1e293b; display: flex; border-top: 1px solid rgba(255,255,255,0.1); z-index: 1000; }
         .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 11px; color: #94a3b8; cursor: pointer; }
         .nav-item.active { color: var(--accent); }
-        .logout-btn { background: #e74c3c !important; margin-top: 20px; }
     </style>
 </head>
 <body>
 
 <div class="app">
     <div id="auth-screen" style="padding:50px 25px; text-align:center;">
-        <img src="https://i.ibb.co/LhbV4Vb/FB-IMG-1768455528784.jpg" style="width:110px; border-radius:50%; border:3px solid var(--accent); margin-bottom:20px;">
         <h2 style="color:var(--accent);">POWER STAR</h2>
         <div id="reg-box">
             <input type="text" id="r-name" placeholder="Full Name">
             <input type="number" id="r-phone" placeholder="WhatsApp Number">
             <input type="password" id="r-pass" placeholder="Password">
-            <button class="btn" onclick="authAction('reg')">CREATE ACCOUNT</button>
-            <p onclick="toggleAuth(true)" style="margin-top:20px; cursor:pointer; color:#94a3b8;">Member? <span style="color:var(--accent)">Login</span></p>
+            <button class="btn" onclick="authAction('reg')">REGISTER</button>
+            <p onclick="toggleAuth(true)" style="cursor:pointer; color:#94a3b8; margin-top:15px;">Login here</p>
         </div>
         <div id="log-box" style="display:none;">
-            <input type="number" id="l-phone" placeholder="WhatsApp Number">
+            <input type="number" id="l-phone" placeholder="WhatsApp">
             <input type="password" id="l-pass" placeholder="Password">
             <button class="btn" onclick="authAction('login')">LOGIN</button>
-            <p onclick="toggleAuth(false)" style="margin-top:20px; cursor:pointer; color:#94a3b8;">New? <span style="color:var(--accent)">Register</span></p>
+            <p onclick="toggleAuth(false)" style="cursor:pointer; color:#94a3b8; margin-top:15px;">Register here</p>
         </div>
     </div>
 
     <div id="dashboard">
         <div class="bal-card">
-            <p style="font-size:11px; color:#94a3b8; margin:0;">TOTAL BALANCE</p>
-            <h1 id="main-bal" style="color:var(--accent); margin:10px 0; font-size:35px;">Rs. 0.00</h1>
+            <p style="font-size:11px; color:#94a3b8;">TOTAL BALANCE</p>
+            <h1 id="main-bal" style="color:var(--accent); font-size:35px;">Rs. 0.00</h1>
         </div>
 
         <div id="tab-home" class="tab-content active-tab">
-            <img src="https://i.ibb.co/LhbV4Vb/FB-IMG-1768455528784.jpg" style="width:100%; border-radius:15px; margin-bottom:20px;">
-            <div id="tasks-list"></div>
-        </div>
-
-        <div id="tab-team" class="tab-content">
-            <h3>My Team</h3>
-            <p id="ref-link" style="font-size:11px; background:var(--card); padding:10px; border-radius:10px; word-break:break-all;"></p>
-            <button class="btn logout-btn" onclick="doLogout()">LOGOUT</button>
+            <div id="tasks-list">
+                <p style="text-align:center; color:#94a3b8;">No tasks available yet.</p>
+            </div>
         </div>
 
         <div id="tab-wallet" class="tab-content">
-            <h3>Wallet Binding</h3>
+            <h3 id="wallet-status-title">Wallet Binding</h3>
+            
             <div id="bind-ui">
-                <input type="text" id="w-name" placeholder="Account Name">
+                <input type="text" id="w-name" placeholder="Account Holder Name">
                 <select id="w-method"><option>EasyPaisa</option><option>JazzCash</option></select>
                 <input type="number" id="w-number" placeholder="Account Number">
-                <button id="bind-btn" class="btn" onclick="bindWallet()">BIND NOW</button>
+                <button id="bind-btn" class="btn" onclick="bindWallet()">SAVE & BIND WALLET</button>
             </div>
+
             <div id="withdraw-ui" style="display:none;">
-                <div id="wallet-info" style="background:rgba(46,204,113,0.1); padding:20px; border-radius:15px; border:1px solid var(--accent); text-align:center; color:var(--accent);"></div>
-                <input type="number" id="wd-amt" placeholder="Min 300" style="margin-top:20px;">
-                <button class="btn" onclick="sendWd()">WITHDRAW</button>
+                <div id="wallet-info" style="background:rgba(46,204,113,0.1); padding:15px; border-radius:10px; border:1px solid var(--accent); color:var(--accent); text-align:center;"></div>
+                <input type="number" id="wd-amt" placeholder="Enter Amount (Min 300)" style="margin-top:20px;">
+                <button class="btn" onclick="sendWd()">SUBMIT WITHDRAWAL</button>
+                <p style="font-size:12px; color:#94a3b8; text-align:center; margin-top:10px;">Wallet bound successfully! You can now withdraw.</p>
             </div>
         </div>
 
         <nav class="nav">
             <div class="nav-item active" onclick="tab('tab-home', this)">🏠<span>Home</span></div>
-            <div class="nav-item" onclick="tab('tab-team', this)">👥<span>Team</span></div>
             <div class="nav-item" onclick="tab('tab-wallet', this)">💰<span>Wallet</span></div>
         </nav>
     </div>
@@ -93,19 +88,19 @@
     async function authAction(mode) {
         const ph = mode === 'reg' ? document.getElementById('r-phone').value : document.getElementById('l-phone').value;
         const ps = mode === 'reg' ? document.getElementById('r-pass').value : document.getElementById('l-pass').value;
-        if(!ph || !ps) return alert("Fill fields!");
+        if(!ph || !ps) return alert("Fill all fields!");
 
         try {
             const res = await fetch(`${API}/search?Phone=${ph}`);
             const data = await res.json();
 
             if(mode === 'reg') {
-                if(data.length > 0) return alert("Exists!");
-                const u = { Phone: ph, Password: ps, "Full Name": document.getElementById('r-name').value, Action: "REGISTRATION", Balance: "0" };
+                if(data.length > 0) return alert("Already exists!");
+                const u = { Phone: ph, Password: ps, "Full Name": document.getElementById('r-name').value, Action: "REGISTRATION", Balance: "0", Date: new Date().toLocaleString() };
                 await fetch(API, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({data:[u]}) });
             }
             showDash(ph);
-        } catch(e) { alert("Error!"); }
+        } catch(e) { alert("Auth Error!"); }
     }
 
     function showDash(ph) {
@@ -113,52 +108,90 @@
         localStorage.setItem('ps_session', ph);
         document.getElementById('auth-screen').style.display = 'none';
         document.getElementById('dashboard').style.display = 'block';
-        document.getElementById('ref-link').innerText = window.location.href + "?ref=" + ph;
         sync();
     }
 
     async function sync() {
-        const res = await fetch(`${API}/search?Phone=${userPhone}`);
-        const data = await res.json();
-        
-        const reg = data.find(i => i.Action === "REGISTRATION");
-        if(reg) document.getElementById('main-bal').innerText = "Rs. " + (reg.Balance || "0");
+        if(!userPhone) return;
+        try {
+            const res = await fetch(`${API}/search?Phone=${userPhone}`);
+            const data = await res.json();
+            
+            // Check Balance
+            const reg = data.find(i => i.Action === "REGISTRATION");
+            if(reg) document.getElementById('main-bal').innerText = "Rs. " + (reg.Balance || "0");
 
-        const bnd = data.find(i => i.Action === "BINDING");
-        if(bnd) {
-            document.getElementById('bind-ui').style.display = 'none';
-            document.getElementById('withdraw-ui').style.display = 'block';
-            document.getElementById('wallet-info').innerText = bnd.Extra_Info;
-        }
+            // Check Binding & CLOSE FORM
+            const bnd = data.find(i => i.Action === "BINDING");
+            if(bnd) {
+                document.getElementById('bind-ui').style.display = 'none'; // CLOSE FORM
+                document.getElementById('withdraw-ui').style.display = 'block'; // SHOW WITHDRAW
+                document.getElementById('wallet-status-title').innerText = "Wallet Active";
+                document.getElementById('wallet-info').innerText = "Account: " + bnd.Extra_Info;
+            }
+        } catch(e) { console.log("Sync error"); }
     }
 
     async function bindWallet() {
         const btn = document.getElementById('bind-btn');
-        const info = document.getElementById('w-method').value + ": " + document.getElementById('w-number').value + " (" + document.getElementById('w-name').value + ")";
-        
-        btn.innerText = "Processing...";
-        
+        const holder = document.getElementById('w-name').value;
+        const method = document.getElementById('w-method').value;
+        const num = document.getElementById('w-number').value;
+
+        if(!holder || !num) return alert("Please fill wallet details!");
+
+        btn.innerText = "Saving...";
+        btn.disabled = true;
+
+        const info = method + ": " + num + " (" + holder + ")";
+        const payload = { 
+            Phone: userPhone, 
+            Action: "BINDING", 
+            Extra_Info: info, 
+            Date: new Date().toLocaleString() 
+        };
+
         try {
-            await fetch(API, {
+            const response = await fetch(API, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ data: [{ Phone: userPhone, Action: "BINDING", Extra_Info: info, Date: new Date().toLocaleString() }] })
+                body: JSON.stringify({ data: [payload] })
             });
-            alert("Success!"); sync();
-        } catch(e) { alert("Failed!"); }
-        btn.innerText = "BIND NOW";
+
+            if(response.ok) {
+                alert("Success! Wallet details saved.");
+                await sync(); // This will close the form
+            } else {
+                alert("Server error. Try again.");
+            }
+        } catch(e) {
+            alert("Network error.");
+        } finally {
+            btn.innerText = "SAVE & BIND WALLET";
+            btn.disabled = false;
+        }
     }
 
-    function tab(t, el) {
-        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active-tab'));
+    function tab(id, el) {
+        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active-tab'));
         document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-        document.getElementById(t).classList.add('active-tab'); el.classList.add('active');
+        document.getElementById(id).classList.add('active-tab');
+        el.classList.add('active');
         sync();
     }
-    function doLogout() { localStorage.removeItem('ps_session'); location.reload(); }
-    function toggleAuth(l) {
-        document.getElementById('reg-box').style.display = l ? 'none' : 'block';
-        document.getElementById('log-box').style.display = l ? 'block' : 'none';
+
+    function toggleAuth(isLog) {
+        document.getElementById('reg-box').style.display = isLog ? 'none' : 'block';
+        document.getElementById('log-box').style.display = isLog ? 'block' : 'none';
+    }
+
+    async function sendWd() {
+        const amt = document.getElementById('wd-amt').value;
+        if(amt < 300) return alert("Minimum withdrawal is 300!");
+        const payload = { Phone: userPhone, Balance: amt, Action: "WITHDRAWAL", Date: new Date().toLocaleString(), Extra_Info: "Pending" };
+        await fetch(API, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({data:[payload]}) });
+        alert("Withdrawal request sent!");
+        document.getElementById('wd-amt').value = "";
     }
 </script>
 </body>
