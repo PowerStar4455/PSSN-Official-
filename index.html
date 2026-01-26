@@ -4,14 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Power Star - Official</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
-        :root { --accent: #2ecc71; --bg: #0f172a; --card: rgba(255, 255, 255, 0.08); }
+        :root { --accent: #2ecc71; --bg: #0f172a; --card: rgba(255, 255, 255, 0.05); }
         * { box-sizing: border-box; font-family: 'Poppins', sans-serif; transition: 0.3s; }
-        body { margin: 0; background: var(--bg); color: white; display: flex; justify-content: center; }
+        body { margin: 0; background: var(--bg); color: white; display: flex; justify-content: center; overflow-x: hidden; }
         .app { width: 100%; max-width: 450px; min-height: 100vh; background: var(--bg); position: relative; border: 1px solid rgba(255,255,255,0.1); padding-bottom: 90px; }
-        input, select { width: 100%; padding: 16px; background: var(--card); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; color: white; margin-bottom: 15px; outline: none; }
-        .btn { width: 100%; padding: 16px; background: linear-gradient(135deg, #2ecc71, #27ae60); color: white; border: none; border-radius: 12px; font-weight: 600; cursor: pointer; text-align: center; display: block; width: 100%; }
+        input, select { width: 100%; padding: 15px; background: var(--card); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; color: white; margin-bottom: 15px; outline: none; }
+        .btn { width: 100%; padding: 16px; background: linear-gradient(135deg, #2ecc71, #27ae60); color: white; border: none; border-radius: 12px; font-weight: 600; cursor: pointer; text-align: center; display: block; text-decoration: none; }
         #dashboard { display: none; }
         .tab-content { display: none; padding: 20px; animation: fadeIn 0.4s; }
         .active-tab { display: block; }
@@ -25,174 +25,154 @@
 <body>
 
 <div class="app">
-    <div id="auth-screen" style="padding:50px 25px; text-align:center;">
+    <div id="auth-screen" style="padding:40px 25px; text-align:center;">
+        <img src="https://i.ibb.co/LhbV4Vb/FB-IMG-1768455528784.jpg" style="width:110px; border-radius:50%; border:3px solid var(--accent); margin-bottom:20px;">
         <h2 style="color:var(--accent);">POWER STAR</h2>
         <div id="reg-box">
-            <input type="text" id="r-name" placeholder="Full Name">
-            <input type="number" id="r-phone" placeholder="WhatsApp Number">
-            <input type="password" id="r-pass" placeholder="Password">
-            <button class="btn" onclick="authAction('reg')">REGISTER</button>
-            <p onclick="toggleAuth(true)" style="cursor:pointer; color:#94a3b8; margin-top:15px;">Login here</p>
+            <input type="text" id="name" placeholder="Full Name">
+            <input type="number" id="phone" placeholder="WhatsApp Number">
+            <input type="password" id="pass" placeholder="Password">
+            <button class="btn" id="reg-btn" onclick="auth('reg')">CREATE ACCOUNT</button>
+            <p onclick="toggleAuth(true)" style="cursor:pointer; color:#94a3b8; margin-top:15px;">Member? <span style="color:var(--accent)">Login</span></p>
         </div>
         <div id="log-box" style="display:none;">
-            <input type="number" id="l-phone" placeholder="WhatsApp">
+            <input type="number" id="l-phone" placeholder="WhatsApp Number">
             <input type="password" id="l-pass" placeholder="Password">
-            <button class="btn" onclick="authAction('login')">LOGIN</button>
-            <p onclick="toggleAuth(false)" style="cursor:pointer; color:#94a3b8; margin-top:15px;">Register here</p>
+            <button class="btn" id="log-btn" onclick="auth('log')">LOGIN NOW</button>
+            <p onclick="toggleAuth(false)" style="cursor:pointer; color:#94a3b8; margin-top:15px;">New? <span style="color:var(--accent)">Register</span></p>
         </div>
     </div>
 
     <div id="dashboard">
         <div class="bal-card">
-            <p style="font-size:11px; color:#94a3b8;">TOTAL BALANCE</p>
-            <h1 id="main-bal" style="color:var(--accent); font-size:35px;">Rs. 0.00</h1>
+            <p style="font-size:11px; color:#94a3b8;">AVAILABLE BALANCE</p>
+            <h1 id="user-balance" style="color:var(--accent); font-size:35px;">Rs. 0</h1>
         </div>
 
         <div id="tab-home" class="tab-content active-tab">
-            <div id="tasks-list">
-                <p style="text-align:center; color:#94a3b8;">No tasks available yet.</p>
+            <img src="https://i.ibb.co/LhbV4Vb/FB-IMG-1768455528784.jpg" style="width:100%; border-radius:15px; margin-bottom:20px;">
+            <div style="background:var(--card); padding:15px; border-radius:12px; font-size:13px; line-height:1.6; color:#cbd5e1;">
+                <strong style="color:var(--accent)">English Instructions:</strong><br>
+                - Complete your daily tasks to earn rewards.<br>
+                - One account per device is allowed.<br>
+                - Minimum withdrawal is Rs. 300.
             </div>
+            <button class="btn" onclick="window.location.href='https://whatsapp.com/channel/0029VbBtlLd29752E8E2z10W'" style="margin-top:15px; background:#25d366;">WHATSAPP CHANNEL</button>
+        </div>
+
+        <div id="tab-about" class="tab-content">
+            <h3 style="color:var(--accent)">About Us</h3>
+            <p style="font-size:13px; color:#cbd5e1;">Power Star provides high-quality social media marketing services. Our platform allows users to earn by performing simple tasks.</p>
+        </div>
+
+        <div id="tab-team" class="tab-content">
+            <h3>My Team</h3>
+            <p id="ref-link" style="font-size:11px; padding:10px; background:var(--card); border:1px dashed var(--accent); word-break:break-all;"></p>
+            <button class="btn" style="background:#e74c3c; margin-top:50px;" onclick="logout()">LOGOUT</button>
         </div>
 
         <div id="tab-wallet" class="tab-content">
-            <h3 id="wallet-status-title">Wallet Binding</h3>
-            
+            <h3>Account Binding</h3>
             <div id="bind-ui">
-                <input type="text" id="w-name" placeholder="Account Holder Name">
-                <select id="w-method"><option>EasyPaisa</option><option>JazzCash</option></select>
-                <input type="number" id="w-number" placeholder="Account Number">
-                <button id="bind-btn" class="btn" onclick="bindWallet()">SAVE & BIND WALLET</button>
+                <input type="text" id="acc-name" placeholder="Holder Name">
+                <select id="acc-method"><option>EasyPaisa</option><option>JazzCash</option></select>
+                <input type="number" id="acc-num" placeholder="Account Number">
+                <button class="btn" id="bind-btn" onclick="saveBinding()">BIND ACCOUNT</button>
             </div>
-
             <div id="withdraw-ui" style="display:none;">
-                <div id="wallet-info" style="background:rgba(46,204,113,0.1); padding:15px; border-radius:10px; border:1px solid var(--accent); color:var(--accent); text-align:center;"></div>
-                <input type="number" id="wd-amt" placeholder="Enter Amount (Min 300)" style="margin-top:20px;">
-                <button class="btn" onclick="sendWd()">SUBMIT WITHDRAWAL</button>
-                <p style="font-size:12px; color:#94a3b8; text-align:center; margin-top:10px;">Wallet bound successfully! You can now withdraw.</p>
+                <div id="saved-acc" style="background:rgba(46,204,113,0.1); padding:15px; border-radius:10px; border:1px solid var(--accent); text-align:center; color:var(--accent);"></div>
+                <input type="number" placeholder="Min 300" style="margin-top:20px;">
+                <button class="btn" onclick="alert('Sent!')">WITHDRAW</button>
             </div>
         </div>
 
         <nav class="nav">
-            <div class="nav-item active" onclick="tab('tab-home', this)">🏠<span>Home</span></div>
-            <div class="nav-item" onclick="tab('tab-wallet', this)">💰<span>Wallet</span></div>
+            <div class="nav-item active" onclick="nav('tab-home', this)">🏠<span>Home</span></div>
+            <div class="nav-item" onclick="nav('tab-about', this)">ℹ️<span>About</span></div>
+            <div class="nav-item" onclick="nav('tab-team', this)">👥<span>Team</span></div>
+            <div class="nav-item" onclick="nav('tab-wallet', this)">💰<span>Wallet</span></div>
         </nav>
     </div>
 </div>
 
 <script>
     const API = "https://sheetdb.io/api/v1/fz1504ko2kdts";
-    let userPhone = localStorage.getItem('ps_session') || "";
+    let myPhone = localStorage.getItem('ps_user') || "";
 
-    window.onload = () => { if(userPhone) { showDash(userPhone); } };
+    window.onload = () => { if(myPhone) loginOk(myPhone); };
 
-    async function authAction(mode) {
-        const ph = mode === 'reg' ? document.getElementById('r-phone').value : document.getElementById('l-phone').value;
-        const ps = mode === 'reg' ? document.getElementById('r-pass').value : document.getElementById('l-pass').value;
-        if(!ph || !ps) return alert("Fill all fields!");
+    async function auth(mode) {
+        const ph = mode === 'reg' ? document.getElementById('phone').value : document.getElementById('l-phone').value;
+        const ps = mode === 'reg' ? document.getElementById('pass').value : document.getElementById('l-pass').value;
+        const btn = mode === 'reg' ? document.getElementById('reg-btn') : document.getElementById('log-btn');
+
+        if(!ph || !ps) return alert("Fill fields!");
+        btn.innerText = "Checking...";
 
         try {
             const res = await fetch(`${API}/search?Phone=${ph}`);
             const data = await res.json();
 
             if(mode === 'reg') {
-                if(data.length > 0) return alert("Already exists!");
-                const u = { Phone: ph, Password: ps, "Full Name": document.getElementById('r-name').value, Action: "REGISTRATION", Balance: "0", Date: new Date().toLocaleString() };
-                await fetch(API, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({data:[u]}) });
+                if(data.some(u => u.Action === "REGISTRATION")) {
+                    alert("This number is already registered!");
+                } else {
+                    const user = { Phone: ph, Password: ps, "Full Name": document.getElementById('name').value, Action: "REGISTRATION", Balance: "0", Date: new Date().toLocaleString() };
+                    await fetch(API, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({data:[user]}) });
+                    loginOk(ph);
+                }
+            } else {
+                const found = data.find(u => u.Action === "REGISTRATION" && u.Password === ps);
+                if(found) loginOk(ph); else alert("Wrong details!");
             }
-            showDash(ph);
-        } catch(e) { alert("Auth Error!"); }
+        } catch(e) { alert("Error!"); }
+        btn.innerText = mode === 'reg' ? "CREATE ACCOUNT" : "LOGIN NOW";
     }
 
-    function showDash(ph) {
-        userPhone = ph;
-        localStorage.setItem('ps_session', ph);
+    function loginOk(ph) {
+        myPhone = ph;
+        localStorage.setItem('ps_user', ph);
         document.getElementById('auth-screen').style.display = 'none';
         document.getElementById('dashboard').style.display = 'block';
+        document.getElementById('ref-link').innerText = window.location.href.split('?')[0] + "?ref=" + ph;
         sync();
     }
 
     async function sync() {
-        if(!userPhone) return;
-        try {
-            const res = await fetch(`${API}/search?Phone=${userPhone}`);
-            const data = await res.json();
-            
-            // Check Balance
-            const reg = data.find(i => i.Action === "REGISTRATION");
-            if(reg) document.getElementById('main-bal').innerText = "Rs. " + (reg.Balance || "0");
-
-            // Check Binding & CLOSE FORM
-            const bnd = data.find(i => i.Action === "BINDING");
-            if(bnd) {
-                document.getElementById('bind-ui').style.display = 'none'; // CLOSE FORM
-                document.getElementById('withdraw-ui').style.display = 'block'; // SHOW WITHDRAW
-                document.getElementById('wallet-status-title').innerText = "Wallet Active";
-                document.getElementById('wallet-info').innerText = "Account: " + bnd.Extra_Info;
-            }
-        } catch(e) { console.log("Sync error"); }
-    }
-
-    async function bindWallet() {
-        const btn = document.getElementById('bind-btn');
-        const holder = document.getElementById('w-name').value;
-        const method = document.getElementById('w-method').value;
-        const num = document.getElementById('w-number').value;
-
-        if(!holder || !num) return alert("Please fill wallet details!");
-
-        btn.innerText = "Saving...";
-        btn.disabled = true;
-
-        const info = method + ": " + num + " (" + holder + ")";
-        const payload = { 
-            Phone: userPhone, 
-            Action: "BINDING", 
-            Extra_Info: info, 
-            Date: new Date().toLocaleString() 
-        };
-
-        try {
-            const response = await fetch(API, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ data: [payload] })
-            });
-
-            if(response.ok) {
-                alert("Success! Wallet details saved.");
-                await sync(); // This will close the form
-            } else {
-                alert("Server error. Try again.");
-            }
-        } catch(e) {
-            alert("Network error.");
-        } finally {
-            btn.innerText = "SAVE & BIND WALLET";
-            btn.disabled = false;
+        const res = await fetch(`${API}/search?Phone=${myPhone}`);
+        const data = await res.json();
+        const reg = data.find(i => i.Action === "REGISTRATION");
+        if(reg) document.getElementById('user-balance').innerText = "Rs. " + (reg.Balance || "0");
+        const bnd = data.find(i => i.Action === "BINDING");
+        if(bnd) {
+            document.getElementById('bind-ui').style.display = 'none';
+            document.getElementById('withdraw-ui').style.display = 'block';
+            document.getElementById('saved-acc').innerText = "Bound: " + bnd.Extra_Info;
         }
     }
 
-    function tab(id, el) {
-        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active-tab'));
+    async function saveBinding() {
+        const info = document.getElementById('acc-method').value + ": " + document.getElementById('acc-num').value;
+        document.getElementById('bind-btn').innerText = "Binding...";
+        await fetch(API, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ data: [{ Phone: myPhone, Action: "BINDING", Extra_Info: info, Date: new Date().toLocaleString() }] })
+        });
+        alert("Done!"); sync();
+    }
+
+    function nav(t, el) {
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active-tab'));
         document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-        document.getElementById(id).classList.add('active-tab');
-        el.classList.add('active');
+        document.getElementById(t).classList.add('active-tab'); el.classList.add('active');
         sync();
     }
-
-    function toggleAuth(isLog) {
-        document.getElementById('reg-box').style.display = isLog ? 'none' : 'block';
-        document.getElementById('log-box').style.display = isLog ? 'block' : 'none';
-    }
-
-    async function sendWd() {
-        const amt = document.getElementById('wd-amt').value;
-        if(amt < 300) return alert("Minimum withdrawal is 300!");
-        const payload = { Phone: userPhone, Balance: amt, Action: "WITHDRAWAL", Date: new Date().toLocaleString(), Extra_Info: "Pending" };
-        await fetch(API, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({data:[payload]}) });
-        alert("Withdrawal request sent!");
-        document.getElementById('wd-amt').value = "";
+    function logout() { localStorage.removeItem('ps_user'); location.reload(); }
+    function toggleAuth(l) {
+        document.getElementById('reg-box').style.display = l ? 'none' : 'block';
+        document.getElementById('log-box').style.display = l ? 'block' : 'none';
     }
 </script>
 </body>
-</html>
+    </html>
