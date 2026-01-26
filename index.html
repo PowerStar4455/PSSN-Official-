@@ -3,35 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PSSN - Power Star Sales Network</title>
+    <title>Power Star Sales Network (PSSN)</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
     <style>
-        :root { --gold-grad: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%); --dark-bg: #0f172a; --card-bg: rgba(255, 255, 255, 0.05); }
+        :root { --green: #2ecc71; --dark: #0f172a; --card: rgba(255, 255, 255, 0.05); }
         * { box-sizing: border-box; font-family: 'Poppins', sans-serif; transition: 0.3s; }
-        body { margin: 0; background: var(--dark-bg); color: white; display: flex; justify-content: center; overflow-x: hidden; }
-        .app-container { width: 100%; max-width: 450px; min-height: 100vh; background: var(--dark-bg); position: relative; border: 1px solid rgba(255,255,255,0.1); }
-        input, select, textarea { width: 100%; padding: 14px; background: var(--card-bg); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; color: white; outline: none; margin-bottom: 12px; font-size: 14px; }
-        .btn-premium { width: 100%; padding: 16px; background: var(--gold-grad); color: white; border: none; border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; gap: 10px; text-decoration: none; }
+        body { margin: 0; background: var(--dark); color: white; display: flex; justify-content: center; }
+        .app-container { width: 100%; max-width: 450px; min-height: 100vh; position: relative; border: 1px solid rgba(255,255,255,0.1); }
+        input, select, textarea { width: 100%; padding: 14px; background: var(--card); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; color: white; margin-bottom: 12px; outline: none; }
+        .btn-premium { width: 100%; padding: 16px; background: linear-gradient(135deg, #2ecc71, #27ae60); color: white; border: none; border-radius: 12px; font-weight: 600; cursor: pointer; margin-bottom: 10px; display: block; text-align: center; text-decoration: none; }
         
-        /* Welcome Overlay Styles */
-        #welcome-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #0f172a; z-index: 5000; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 25px; text-align: center; }
-        .welcome-card { background: rgba(255, 255, 255, 0.03); border: 1px solid #2ecc71; border-radius: 20px; padding: 20px; width: 100%; max-width: 380px; box-shadow: 0 0 30px rgba(46, 204, 113, 0.15); }
+        /* Welcome Overlay */
+        #welcome-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--dark); z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .welcome-card { background: var(--card); border: 1px solid var(--green); border-radius: 20px; padding: 20px; text-align: center; width: 100%; max-width: 380px; }
         .welcome-logo { width: 100%; border-radius: 10px; margin-bottom: 15px; }
-        .instr-box-en { background: rgba(0, 0, 0, 0.4); padding: 15px; border-radius: 12px; font-size: 12px; text-align: left; margin-bottom: 20px; border-left: 4px solid #2ecc71; color: #e2e8f0; line-height: 1.5; }
+        .instr-en { text-align: left; font-size: 12px; color: #cbd5e1; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 10px; border-left: 4px solid var(--green); margin-bottom: 20px; line-height: 1.6; }
 
         #dashboard { display: none; padding-bottom: 90px; }
-        .full-page-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #0f172a; z-index: 2000; padding: 25px; overflow-y: auto; }
         .tab-content { display: none; padding: 20px; animation: fadeIn 0.4s; }
         .active-tab { display: block; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        .balance-card { background: var(--card-bg); padding: 25px; border-radius: 20px; text-align: center; margin: 20px; border: 1px solid rgba(255,255,255,0.05); }
-        .task-card { background: var(--card-bg); padding: 20px; border-radius: 15px; border: 1px solid #2ecc71; margin-top: 15px; text-align: center; position: relative; }
-        .price-badge { position: absolute; top: 10px; right: 10px; background: #2ecc71; color: black; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: bold; }
-        .bottom-nav { position: fixed; bottom: 0; width: 100%; max-width: 450px; height: 75px; background: rgba(15, 23, 42, 0.98); display: flex; border-top: 1px solid rgba(255,255,255,0.05); z-index: 1000; }
+        
+        .balance-card { background: var(--card); padding: 25px; border-radius: 20px; text-align: center; margin: 20px; border: 1px solid rgba(255,255,255,0.05); position: relative; }
+        .logout-btn { position: absolute; top: 10px; right: 10px; background: #e74c3c; border: none; color: white; padding: 5px 10px; border-radius: 8px; font-size: 10px; cursor: pointer; }
+        
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; max-width: 450px; height: 75px; background: #1e293b; display: flex; z-index: 1000; border-top: 1px solid rgba(255,255,255,0.1); }
         .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 11px; color: #94a3b8; cursor: pointer; }
-        .nav-item.active { color: #2ecc71; }
-        .copy-box { background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; margin-top: 10px; border: 1px dashed #2ecc71; }
-        .announcement-bar { background: rgba(46, 204, 113, 0.1); color: #2ecc71; padding: 10px; border-radius: 10px; font-size: 12px; margin: 10px 20px; text-align: center; }
+        .nav-item.active { color: var(--green); }
+        .announcement-bar { background: rgba(46, 204, 113, 0.1); color: var(--green); padding: 10px; border-radius: 10px; font-size: 12px; margin: 10px 20px; text-align: center; }
     </style>
 </head>
 <body>
@@ -39,256 +38,174 @@
 <div id="welcome-overlay">
     <div class="welcome-card">
         <img src="https://i.ibb.co/LhbV4Vb/FB-IMG-1768455528784.jpg" class="welcome-logo" alt="PSSN Logo">
-        <h3 style="color:#2ecc71; margin: 0 0 10px 0;">How It Works</h3>
-        <div class="instr-box-en">
-            <b>1. Online Tasks:</b> Complete simple social media actions like liking videos or following pages to earn daily rewards for free.<br><br>
-            <b>2. Task Proof:</b> Always take a screenshot after completing a task and upload it. Approval takes 12-24 hours.<br><br>
-            <b>3. Referral System:</b> Share your link to build a sales network. Earn commissions on every successful team withdrawal.<br><br>
-            <b>4. Withdrawals:</b> Minimum limit is Rs. 300. Ensure your JazzCash/EasyPaisa account is correctly bound.
+        <h3 style="color:var(--green); margin:0 0 10px 0;">PSSN INSTRUCTIONS</h3>
+        <div class="instr-en">
+            • <b>How to Earn:</b> Complete simple social media tasks like liking or following pages to earn money for free.<br>
+            • <b>Submission:</b> You must upload a screenshot as proof after finishing each task.<br>
+            • <b>Withdrawals:</b> Minimum limit is Rs. 300. Ensure your account details are correct.<br>
+            • <b>Referrals:</b> Build your Team to increase your daily earning potential.
         </div>
-        <button class="btn-premium" onclick="closeWelcome()">GET STARTED</button>
+        <button class="btn-premium" onclick="closeWelcome()">PROCEED TO APP</button>
     </div>
 </div>
 
 <div class="app-container">
     <div id="auth-screen" style="padding:40px 25px; text-align:center;">
-        <h2 style="color:#2ecc71; letter-spacing: 2px;">PSSN OFFICIAL</h2>
-        <div id="register-form">
-            <input type="text" id="r-name" placeholder="Full Name">
-            <input type="number" id="r-phone" placeholder="WhatsApp Number">
-            <input type="password" id="r-pass" placeholder="Password">
-            <input type="text" id="r-ref" placeholder="Referral Code (Optional)">
-            <button id="reg-btn" class="btn-premium" onclick="enterApp('reg')">CREATE ACCOUNT</button>
-            <p onclick="toggleAuth(true)" style="font-size:13px; cursor:pointer;">Already a member? <span style="color:#2ecc71;">Login</span></p>
-        </div>
-        <div id="login-form" style="display:none;">
+        <h2 style="color:var(--green);">PSSN LOGIN</h2>
+        <div id="login-form">
             <input type="number" id="l-phone" placeholder="WhatsApp Number">
             <input type="password" id="l-pass" placeholder="Password">
             <button id="login-btn" class="btn-premium" onclick="enterApp('login')">LOGIN</button>
-            <p onclick="toggleAuth(false)" style="font-size:13px; cursor:pointer;">New here? <span style="color:#2ecc71;">Register</span></p>
+            <p onclick="toggleAuth(false)" style="font-size:13px; cursor:pointer; color:var(--green);">Register New Account</p>
+        </div>
+        <div id="register-form" style="display:none;">
+            <input type="text" id="r-name" placeholder="Full Name">
+            <input type="number" id="r-phone" placeholder="WhatsApp Number">
+            <input type="password" id="r-pass" placeholder="Password">
+            <input type="text" id="r-ref" placeholder="Referral Code">
+            <button id="reg-btn" class="btn-premium" onclick="enterApp('reg')">CREATE ACCOUNT</button>
+            <p onclick="toggleAuth(true)" style="font-size:13px; cursor:pointer; color:var(--green);">Already have an account? Login</p>
         </div>
     </div>
 
     <div id="dashboard">
         <div id="announcement-area" class="announcement-bar">Welcome to Power Star Sales Network!</div>
-
+        
         <div class="balance-card">
-            <span style="font-size: 11px; color:#94a3b8;">TOTAL EARNINGS</span>
-            <h1 id="main-bal" style="color:#2ecc71; margin:10px 0;">Rs. 0.00</h1>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+            <span style="font-size:11px; color:#94a3b8;">TOTAL BALANCE</span>
+            <h1 id="main-bal" style="color:var(--green); margin:5px 0;">Rs. 0.00</h1>
         </div>
 
         <div id="tab-home" class="tab-content active-tab">
-            <img id="home-banner" src="https://via.placeholder.com/450x200?text=PSSN+Official+Banner" style="width:100%; border-radius:15px; border:1px solid #2ecc71;">
-            <div id="task-container"></div>
+            <img id="home-banner" src="https://i.ibb.co/LhbV4Vb/FB-IMG-1768455528784.jpg" style="width:100%; border-radius:15px; border:1px solid var(--green);">
+            <div id="task-container" style="margin-top:20px;"></div>
         </div>
 
         <div id="tab-about" class="tab-content">
-            <h3 style="color:#2ecc71;">PSSN Guidelines</h3>
-            <div style="background:var(--card-bg); padding:20px; border-radius:12px; font-size:13px; line-height:1.8; color:#cbd5e1;">
-                Power Star Sales Network (PSSN) provides a platform to earn online by performing digital marketing tasks. 
-                <br><br><b>Policy:</b>
-                <br>• One account per person.
-                <br>• Real screenshots only.
-                <br>• Payments processed daily.
+            <h3 style="color:var(--green);">About Us</h3>
+            <div style="background:var(--card); padding:20px; border-radius:12px; font-size:13px; color:#cbd5e1; line-height:1.7; margin-bottom:15px;">
+                PSSN (Power Star Sales Network) is a leading platform for digital task management. We help users earn money online through simple social media engagement. 
             </div>
-            <a href="https://t.me/+wrV-LempJ39lY2Fk" target="_blank" class="btn-premium" style="background:#0088cc; margin-top:15px;">Official Telegram</a>
+            <a href="https://whatsapp.com/channel/0029VbBtlLd29752E8E2z10W" target="_blank" class="btn-premium" style="background:#25D366;">WhatsApp Channel</a>
+            <a href="https://t.me/+wrV-LempJ39lY2Fk" target="_blank" class="btn-premium" style="background:#0088cc;">Telegram Support</a>
         </div>
 
         <div id="tab-team" class="tab-content">
-            <h3 style="color:#2ecc71;">Network Growth</h3>
-            <div class="copy-box">
-                <span id="ref-link" style="font-size:10px; color:#2ecc71; overflow:hidden;">Link...</span>
-                <button onclick="copyRef()" style="background:#2ecc71; border:none; padding:8px 12px; border-radius:8px; font-weight:bold; color:black;">COPY</button>
+            <h3 style="color:var(--green);">My Team</h3>
+            <div style="background:var(--card); padding:15px; border-radius:12px; text-align:center; border: 1px dashed var(--green);">
+                <span style="font-size:10px; color:var(--green);" id="ref-link">Generating...</span><br>
+                <button onclick="copyRef()" style="margin-top:10px; padding:5px 15px; border-radius:5px; border:none; background:var(--green); font-weight:bold;">COPY LINK</button>
             </div>
-            <div style="margin:20px 0; background:rgba(255,255,255,0.03); padding:15px; border-radius:12px; text-align:center;">
-                <span style="font-size:12px;">TEAM SIZE</span>
-                <h2 id="team-count" style="color:#2ecc71; margin:5px 0;">0</h2>
+            <div style="margin-top:20px; background:var(--card); padding:20px; border-radius:12px; text-align:center;">
+                <span style="font-size:12px;">ACTIVE MEMBERS</span>
+                <h2 id="team-count" style="color:var(--green); margin:5px 0;">0</h2>
             </div>
         </div>
 
         <div id="tab-wallet" class="tab-content">
-            <h3 onclick="checkAdminAccess()" style="cursor:pointer; color:#2ecc71;">Withdrawal Portal</h3>
+            <h3 onclick="checkAdminAccess()" style="cursor:pointer; color:var(--green);">Wallet</h3>
             <div id="bind-section">
-                <input type="text" id="acc-name-field" placeholder="Full Account Name">
+                <input type="text" id="acc-name-field" placeholder="Account Title (e.g. Ali Khan)">
                 <select id="acc-type-field"><option>EasyPaisa</option><option>JazzCash</option></select>
                 <input type="number" id="acc-num-field" placeholder="Account Number">
-                <button id="bind-btn" class="btn-premium" onclick="bindAccount()">SAVE PAYMENT INFO</button>
+                <button id="bind-btn" class="btn-premium" onclick="bindAccount()">SAVE ACCOUNT</button>
             </div>
             <div id="saved-acc-display" style="display:none;">
-                <div id="acc-details-text" style="background:rgba(46, 204, 113, 0.1); border:1px dashed #2ecc71; padding:15px; border-radius:12px; text-align:center; color:#2ecc71; font-weight:bold; margin-bottom:15px;">-</div>
-                <input type="number" id="withdraw-amt" placeholder="Amount (Min 300)">
-                <button id="withdraw-btn" class="btn-premium" onclick="requestWithdrawal()">SUBMIT REQUEST</button>
+                <div id="acc-details-text" style="background:rgba(46, 204, 113, 0.1); border:1px dashed var(--green); padding:15px; border-radius:12px; text-align:center; color:var(--green); font-weight:bold;">-</div>
+                <input type="number" id="withdraw-amt" placeholder="Amount (Min 300)" style="margin-top:20px;">
+                <button id="withdraw-btn" class="btn-premium" onclick="requestWithdrawal()">SUBMIT WITHDRAWAL</button>
             </div>
         </div>
 
         <nav class="bottom-nav">
             <div class="nav-item active" onclick="navTo('tab-home', this)">🏠<span>Home</span></div>
-            <div class="nav-item" onclick="navTo('tab-about', this)">ℹ️<span>Rules</span></div>
-            <div class="nav-item" onclick="navTo('tab-team', this)">👥<span>Network</span></div>
+            <div class="nav-item" onclick="navTo('tab-about', this)">ℹ️<span>About Us</span></div>
+            <div class="nav-item" onclick="navTo('tab-team', this)">👥<span>Team</span></div>
             <div class="nav-item" onclick="navTo('tab-wallet', this)">💰<span>Wallet</span></div>
         </nav>
-    </div>
-
-    <div id="admin-panel" class="full-page-overlay">
-        <h3>Admin Panel</h3>
-        <input type="text" id="adm-news" placeholder="Banner Text">
-        <input type="text" id="adm-banner" placeholder="Banner URL">
-        <hr style="border:0.2px solid #2ecc71; margin:20px 0;">
-        <input type="text" id="adm-title" placeholder="Task Title">
-        <input type="text" id="adm-price" placeholder="Reward Rs.">
-        <textarea id="adm-desc" placeholder="Instructions"></textarea>
-        <input type="text" id="adm-link" placeholder="Task Link">
-        <button class="btn-premium" onclick="saveAdminSettings()">PUBLISH</button>
-        <button onclick="closeOverlay('admin-panel')" style="color:white; background:none; border:none; width:100%; padding:20px;">Close</button>
-    </div>
-
-    <div id="task-submission-page" class="full-page-overlay">
-        <h3 id="sub-task-name" style="color:#2ecc71;">Upload Proof</h3>
-        <input type="file" id="proof-file" accept="image/*">
-        <input type="text" id="proof-comment" placeholder="Your Handle/Name">
-        <button id="submit-proof-btn" class="btn-premium" onclick="uploadAndSubmit()">SUBMIT WORK</button>
-        <button onclick="closeOverlay('task-submission-page')" style="color:white; background:none; border:none; width:100%; padding:20px;">Cancel</button>
     </div>
 </div>
 
 <script>
-    let currentUserPhone = "";
+    let currentUserPhone = localStorage.getItem('pssn_phone') || "";
     const SHEETDB_URL = "https://sheetdb.io/api/v1/h0yk6frxj1bdg";
-    const IMGBB_API_KEY = "7d44869894e6378e906c6463406283b7";
+
+    window.onload = () => {
+        if(currentUserPhone) {
+            document.getElementById('auth-screen').style.display = 'none';
+            document.getElementById('dashboard').style.display = 'block';
+            fetchUserData();
+        }
+    };
 
     function closeWelcome() { document.getElementById('welcome-overlay').style.display = 'none'; }
     function toggleAuth(isLogin) {
-        document.getElementById('register-form').style.display = isLogin ? "none" : "block";
-        document.getElementById('login-form').style.display = isLogin ? "block" : "none";
+        document.getElementById('login-form').style.display = isLogin ? 'block' : 'none';
+        document.getElementById('register-form').style.display = isLogin ? 'none' : 'block';
     }
 
     async function enterApp(type) {
         const phone = (type==='reg')?document.getElementById('r-phone').value : document.getElementById('l-phone').value;
         const pass = (type==='reg')?document.getElementById('r-pass').value : document.getElementById('l-pass').value;
-        const btn = (type==='reg')?document.getElementById('reg-btn') : document.getElementById('login-btn');
         if(!phone || !pass) return alert("Fill all fields!");
-        btn.innerText = "Connecting...";
 
         try {
             const res = await fetch(`${SHEETDB_URL}/search?phone=${phone}`);
             const data = await res.json();
+
             if(type==='reg') {
-                if(data.some(u => u.type_action === "REGISTRATION")) return alert("Already registered!");
-                const newUser = { phone: phone, password: pass, acc_name: document.getElementById('r-name').value, balance: "0", type_action: "REGISTRATION", date: new Date().toLocaleString(), status: document.getElementById('r-ref').value || "DIRECT" };
+                if(data.some(u => u.type_action === "REGISTRATION")) return alert("User already exists!");
+                const newUser = { phone, password: pass, acc_name: document.getElementById('r-name').value, balance: "0", type_action: "REGISTRATION", date: new Date().toLocaleString(), status: document.getElementById('r-ref').value || "DIRECT" };
                 await fetch(SHEETDB_URL, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({data:[newUser]}) });
             } else {
                 const user = data.find(u => u.type_action === "REGISTRATION");
-                if(!user || user.password !== pass) return alert("Wrong credentials!");
+                if(!user || user.password !== pass) return alert("Invalid credentials!");
             }
+            localStorage.setItem('pssn_phone', phone);
             currentUserPhone = phone;
-            document.getElementById('auth-screen').style.display = 'none';
-            document.getElementById('dashboard').style.display = 'block';
-            document.getElementById('ref-link').innerText = window.location.origin + window.location.pathname + "?ref=" + phone;
-            fetchUserData();
-        } catch(e) { alert("Error connecting to server!"); }
-        btn.innerText = type==='reg' ? "CREATE ACCOUNT" : "LOGIN";
+            location.reload();
+        } catch(e) { alert("Server Error!"); }
     }
 
     async function fetchUserData() {
-        if(!currentUserPhone) return;
         try {
-            const res = await fetch(`${SHEETDB_URL}/search?phone=${currentUserPhone}`);
+            const res = await fetch(`${SHEETDB_URL}/search?phone=${currentUserPhone}&t=${Date.now()}`);
             const data = await res.json();
             
-            // Balance
             const reg = data.find(i => i.type_action === "REGISTRATION");
-            if(reg) document.getElementById('main-bal').innerText = "Rs. " + (reg.balance || "0.00");
+            if(reg) document.getElementById('main-bal').innerText = "Rs. " + reg.balance;
 
-            // KEY FIX: Account Binding Logic
             const bnd = data.find(i => i.type_action === "ACCOUNT_BIND");
-            const bindSec = document.getElementById('bind-section');
-            const withdrawSec = document.getElementById('saved-acc-display');
-            
             if(bnd) {
-                bindSec.style.display = "none";
-                withdrawSec.style.display = "block";
-                document.getElementById('acc-details-text').innerText = bnd.acc_type + ": " + bnd.acc_num;
-            } else {
-                bindSec.style.display = "block";
-                withdrawSec.style.display = "none";
+                document.getElementById('bind-section').style.display = "none";
+                document.getElementById('saved-acc-display').style.display = "block";
+                document.getElementById('acc-details-text').innerText = `${bnd.acc_type}: ${bnd.acc_num}`;
             }
 
-            // Team & Tasks
-            const teamRes = await fetch(`${SHEETDB_URL}/search?status=${currentUserPhone}`);
-            const team = await teamRes.json();
-            document.getElementById('team-count').innerText = team.length;
-
-            const admRes = await fetch(`${SHEETDB_URL}/search?type_action=ADMIN_SETTING`);
-            const adm = await admRes.json();
-            if(adm.length > 0) {
-                const s = adm[adm.length-1];
-                document.getElementById('announcement-area').innerText = s.status;
-                if(s.acc_name) document.getElementById('home-banner').src = s.acc_name;
-            }
-
-            const taskRes = await fetch(`${SHEETDB_URL}/search?type_action=TASK_POST`);
-            const tasks = await taskRes.json();
-            const container = document.getElementById('task-container');
-            container.innerHTML = "";
-            tasks.reverse().forEach(t => {
-                const div = document.createElement('div'); div.className="task-card";
-                div.innerHTML = `<span class="price-badge">Rs. ${t.date}</span><h3>${t.status}</h3><div class="instr-box" style="font-size:12px; margin:10px 0; color:#94a3b8;">${t.withdraw_amount}</div><button class="btn-premium" onclick="window.open('${t.acc_num}')">GO TO TASK</button><button class="btn-premium" style="background:none; border:1px solid #2ecc71; color:#2ecc71;" onclick="openTaskSubmission('${t.status}')">SUBMIT PROOF</button>`;
-                container.appendChild(div);
-            });
-        } catch(e) { console.log("Refresh fail"); }
+            document.getElementById('ref-link').innerText = window.location.origin + window.location.pathname + "?ref=" + currentUserPhone;
+        } catch(e) { console.log("Fetch Error"); }
     }
 
     async function bindAccount() {
         const n = document.getElementById('acc-name-field').value;
         const t = document.getElementById('acc-type-field').value;
         const num = document.getElementById('acc-num-field').value;
-        if(!n || !num) return alert("Enter details!");
+        if(!n || !num) return alert("Please fill account details!");
+
         const d = { phone: currentUserPhone, acc_name: n, acc_type: t, acc_num: num, type_action: "ACCOUNT_BIND" };
         await fetch(SHEETDB_URL, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({data:[d]}) });
-        alert("Account Bound!"); fetchUserData();
+        alert("Account Saved!"); fetchUserData();
     }
 
-    async function requestWithdrawal() {
-        const amt = document.getElementById('withdraw-amt').value;
-        if(amt < 300) return alert("Min Rs. 300!");
-        const d = { phone: currentUserPhone, withdraw_amount: amt, status: "Pending", type_action: "WITHDRAWAL", date: new Date().toLocaleString() };
-        await fetch(SHEETDB_URL, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({data:[d]}) });
-        alert("Request Sent!");
-    }
-
+    function logout() { localStorage.removeItem('pssn_phone'); location.reload(); }
     function navTo(id, el) {
         document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active-tab'));
         document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
         document.getElementById(id).classList.add('active-tab'); el.classList.add('active');
-        if(id === 'tab-wallet') fetchUserData();
+        if(id === 'tab-wallet' || id === 'tab-team') fetchUserData();
     }
-
-    function copyRef() { navigator.clipboard.writeText(document.getElementById('ref-link').innerText); alert("Copied!"); }
-    function checkAdminAccess() { if(prompt("Pin:") === "Hussain@2025") document.getElementById('admin-panel').style.display = 'block'; }
-    function closeOverlay(id) { document.getElementById(id).style.display = 'none'; }
-    function openTaskSubmission(n) { document.getElementById('sub-task-name').innerText = n; document.getElementById('task-submission-page').style.display = 'block'; }
-
-    async function uploadAndSubmit() {
-        const file = document.getElementById('proof-file').files[0];
-        if(!file) return alert("Select image!");
-        const btn = document.getElementById('submit-proof-btn'); btn.innerText = "Uploading...";
-        try {
-            const fd = new FormData(); fd.append("image", file);
-            const imgRes = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: "POST", body: fd });
-            const imgData = await imgRes.json();
-            const sub = { phone: currentUserPhone, status: "Submitted", type_action: "TASK_SUBMISSION", acc_name: document.getElementById('sub-task-name').innerText, acc_num: imgData.data.url, date: document.getElementById('proof-comment').value };
-            await fetch(SHEETDB_URL, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({data:[sub]}) });
-            alert("Success!"); closeOverlay('task-submission-page');
-        } catch(e) { alert("Failed!"); }
-        btn.innerText = "SUBMIT WORK";
-    }
-
-    async function saveAdminSettings() {
-        const news = { phone: "GLOBAL", acc_name: document.getElementById('adm-banner').value, status: document.getElementById('adm-news').value, type_action: "ADMIN_SETTING" };
-        const task = { phone: "ADMIN", status: document.getElementById('adm-title').value, withdraw_amount: document.getElementById('adm-desc').value, acc_num: document.getElementById('adm-link').value, date: document.getElementById('adm-price').value, type_action: "TASK_POST" };
-        await fetch(SHEETDB_URL, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({data:[news, task]}) });
-        alert("Published!"); closeOverlay('admin-panel'); fetchUserData();
-    }
+    function copyRef() { navigator.clipboard.writeText(document.getElementById('ref-link').innerText); alert("Link Copied!"); }
 </script>
 </body>
 </html>
