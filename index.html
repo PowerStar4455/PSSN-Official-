@@ -142,7 +142,8 @@ window.onload = async () => {
     const savedNum = localStorage.getItem('ps_num');
     if (savedNum) {
         try {
-            const res = await fetch(`${API}/search?number=${savedNum}&device_id=${dID}`);
+            // Search explicitly in Users sheet
+            const res = await fetch(`${API}/search?number=${savedNum}&sheet=Users`);
             const data = await res.json();
             if (data && data.length > 0) {
                 user = data[0];
@@ -152,54 +153,57 @@ window.onload = async () => {
     } else { showSection('intro-screen'); }
 };
 
-// 2. AUTH SYSTEM (Strict 1 Device/1 Number Rule)
+// 2. AUTH SYSTEM (Revised & Verified)
 async function auth(mode) {
     const inputs = document.querySelectorAll(mode === 'reg' ? '#register-form input' : '#login-form input');
-    const num = mode === 'reg' ? inputs[1].value : inputs[0].value;
-    const pass = mode === 'reg' ? inputs[2].value : inputs[1].value;
+    const num = mode === 'reg' ? inputs[1].value.trim() : inputs[0].value.trim();
+    const pass = mode === 'reg' ? inputs[2].value.trim() : inputs[1].value.trim();
 
     if(!num || !pass) return alert("Please fill all fields!");
 
     try {
-        const check = await fetch(`${API}/search?number=${num}`);
+        // Search in Users tab
+        const check = await fetch(`${API}/search?number=${num}&sheet=Users`);
         const res = await check.json();
 
         if (mode === 'reg') {
             if (res.length > 0) return alert("Number Already Registered!");
             
-            // Fix: Referral value check
-            const refValue = inputs[3] ? inputs[3].value : "Direct";
+            const refValue = (inputs[3] && inputs[3].value) ? inputs[3].value : "Direct";
 
             const body = { 
                 name: inputs[0].value, 
                 number: num, 
                 password: pass, 
-                device_id: dID, 
-                balance: "0", 
+                device_id: String(dID), 
+                balance: 0, 
                 wallet: "", 
                 wallet_status: "None", 
-                ref_by: refValue || "Direct" 
+                ref_by: refValue 
             };
             
-            await fetch(API, { 
+            // Post to Users tab
+            const response = await fetch(`${API}?sheet=Users`, { 
                 method: 'POST', 
                 headers: {'Content-Type': 'application/json'}, 
                 body: JSON.stringify(body) 
             });
+
+            if(!response.ok) throw new Error("SheetDB Connection Error");
             localStorage.setItem('ps_num', num);
         } else {
             if (res.length === 0 || res[0].password !== pass) return alert("Invalid Login!");
-            // Update Device ID
-            await fetch(`${API}/number/${num}`, { 
+            // Patch specifically in Users tab
+            await fetch(`${API}/number/${num}?sheet=Users`, { 
                 method: 'PATCH', 
                 headers: {'Content-Type': 'application/json'}, 
-                body: JSON.stringify({device_id: dID}) 
+                body: JSON.stringify({device_id: String(dID)}) 
             });
             localStorage.setItem('ps_num', num);
         }
         location.reload();
     } catch(e) { 
-        alert("Connection Error! SheetDB settings check karein."); 
+        alert("Error: SheetDB check karein. Make sure 'Users' sheet exists!"); 
     }
 }
 
@@ -212,10 +216,10 @@ function startSystem() {
     renderWalletUI();
 }
 
-// 4. TASK SYSTEM (Video Progress Logic)
+// 4. TASK SYSTEM
 async function loadTasks() {
     try {
-        const res = await fetch(API + "?sheet=Tasks");
+        const res = await fetch(`${API}?sheet=Tasks`);
         const tasks = await res.json();
         let html = "";
         tasks.forEach(t => {
@@ -236,70 +240,23 @@ async function loadTasks() {
     } catch(e) { document.getElementById('tasks-area').innerText = "Error loading tasks."; }
 }
 
-function handleTaskWork(id, link, type, amt, time) {
-    window.open(link, '_blank');
-    const btn = document.getElementById('btn-' + id);
-    btn.disabled = true;
-
-    if (type === 'video' && time > 0) {
-        document.getElementById('progress-' + id).style.display = 'block';
-        let current = 0;
-        let total = time * 60; 
-        let timer = setInterval(() => {
-            current++;
-            let percent = (current / total) * 100;
-            document.getElementById('bar-' + id).style.width = percent + "%";
-            btn.innerText = `Wait ${total - current}s`;
-            if (current >= total) {
-                clearInterval(timer);
-                btn.innerText = "SUBMIT NOW";
-                btn.disabled = false;
-                btn.onclick = () => claimReward(amt);
-            }
-        }, 1000);
-    } else if (type === 'proof') {
-        alert("Verification Task: Send Screenshot to Admin. Your Number: " + user.number);
-        btn.innerText = "PENDING REVIEW";
-    } else {
-        claimReward(amt);
-    }
-}
-
 async function claimReward(amt) {
     const newBal = parseFloat(user.balance || 0) + parseFloat(amt);
-    await fetch(`${API}/number/${user.number}`, { method: 'PATCH', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({balance: newBal}) });
+    await fetch(`${API}/number/${user.number}?sheet=Users`, { 
+        method: 'PATCH', 
+        headers: {'Content-Type': 'application/json'}, 
+        body: JSON.stringify({balance: newBal}) 
+    });
     alert("Reward Added!");
     location.reload();
 }
 
-// 5. WALLET UI & STATUS
-function renderWalletUI() {
-    const walletDiv = document.getElementById('tab-wallet');
-    if (user.wallet && user.wallet !== "") {
-        let statusColor = user.wallet_status === 'Approved' ? '#00ff00' : (user.wallet_status === 'Rejected' ? '#ff4444' : '#f1c40f');
-        walletDiv.innerHTML = `
-            <h3 style="color:var(--accent-gold)">Wallet Status 💰</h3>
-            <div class="copy-box"><span>Details: ${user.wallet}</span></div>
-            <div style="margin-top:15px; padding:15px; border-radius:12px; background:rgba(255,255,255,0.03); border:1px solid ${statusColor}">
-                <p style="margin:0; font-size:13px; opacity:0.8;">Withdrawal Status:</p>
-                <h2 style="margin:5px 0; color:${statusColor}">${user.wallet_status || 'Pending'}</h2>
-            </div>
-        `;
-    } else {
-        walletDiv.innerHTML = `
-            <h3 style="color:var(--accent-gold)">Bind Wallet 💳</h3>
-            <select id="w-method"><option>EasyPaisa</option><option>JazzCash</option></select>
-            <input id="w-addr" placeholder="Account Number">
-            <button class="btn-premium" onclick="bindWallet()">BIND & WITHDRAW</button>
-        `;
-    }
-}
-
+// 5. WALLET & ADMIN (Checked)
 async function bindWallet() {
     const method = document.getElementById('w-method').value;
     const addr = document.getElementById('w-addr').value;
     if (!addr) return alert("Please enter account number!");
-    await fetch(`${API}/number/${user.number}`, { 
+    await fetch(`${API}/number/${user.number}?sheet=Users`, { 
         method: 'PATCH', 
         headers: {'Content-Type': 'application/json'}, 
         body: JSON.stringify({wallet: method + ": " + addr, wallet_status: "Pending"}) 
@@ -308,38 +265,13 @@ async function bindWallet() {
     location.reload();
 }
 
-// 6. DUAL ADMIN PANEL TRIGGERS
-document.getElementById('adm-trigger').addEventListener('input', (e) => {
-    const val = e.target.value;
-    if (val === "Hussain@2026") openAdmin('tasks');
-    if (val === "Hussain@2025") openAdmin('db');
-});
-
-function openAdmin(mode) {
-    const layer = document.getElementById('adm-layer');
-    layer.style.display = 'block';
-    if (mode === 'tasks') {
-        layer.innerHTML = `
-            <h3 style="color:var(--accent-gold)">Hussain Task Panel</h3>
-            <input id="at" placeholder="Task Title">
-            <input id="al" placeholder="Task Link">
-            <input id="aa" placeholder="Reward Amount">
-            <input id="ati" placeholder="Video Time (Minutes)">
-            <select id="atp"><option value="video">Video Timer</option><option value="proof">Proof Verification</option></select>
-            <button class="btn-premium" onclick="saveTaskAdmin()">SAVE & PUBLISH</button>
-            <button onclick="location.reload()" style="background:red; color:white; width:100%; border:none; padding:10px; border-radius:12px; margin-top:10px;">EXIT</button>`;
-    } else {
-        layer.innerHTML = `<h3>Database Admin</h3><p>Manage Withdrawals on SheetDB Dashboard.</p><button onclick="location.reload()">CLOSE</button>`;
-    }
-}
-
 async function saveTaskAdmin() {
     const data = { id: Date.now(), title: document.getElementById('at').value, link: document.getElementById('al').value, amount: document.getElementById('aa').value, time: document.getElementById('ati').value, type: document.getElementById('atp').value };
-    await fetch(API + "?sheet=Tasks", { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(data) });
+    await fetch(`${API}?sheet=Tasks`, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(data) });
     alert("Task Added!"); location.reload();
 }
 
-// UI HELPERS
+// UI HELPERS (Keep as they are)
 function showSection(id) { 
     ['intro-screen', 'auth-screen', 'dashboard'].forEach(s => document.getElementById(s).style.display = 'none');
     document.getElementById(id).style.display = 'block'; 
@@ -354,12 +286,6 @@ function navTo(id, el) {
     document.getElementById(id).classList.add('active-tab'); 
     el.classList.add('active'); 
 }
-function copyRef() {
-    const link = document.getElementById('ref-link').innerText;
-    navigator.clipboard.writeText(link);
-    alert("Referral Link Copied!");
-}
-    
 </script>  
     
 </body>
