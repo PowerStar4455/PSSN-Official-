@@ -1,154 +1,439 @@
-        <!DOCTYPE html>
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Power Star Official</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <title>Power Star - Official</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
     <style>
-        :root { --accent: #2ecc71; --bg: #0f172a; --card: rgba(255, 255, 255, 0.08); }
-        * { box-sizing: border-box; font-family: 'Poppins', sans-serif; margin: 0; padding: 0; }
-        body { background: var(--bg); color: white; display: flex; justify-content: center; }
-        .app { width: 100%; max-width: 450px; min-height: 100vh; background: var(--bg); position: relative; padding-bottom: 90px; }
-        .brand-img { width: 100%; border-radius: 0 0 20px 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); display: block; }
-        input, select { width: 90%; margin: 8px 5%; padding: 14px; background: var(--card); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; color: white; outline: none; }
-        .btn { width: 90%; margin: 10px 5%; padding: 16px; background: linear-gradient(135deg, #2ecc71, #27ae60); color: white; border: none; border-radius: 12px; font-weight: 600; cursor: pointer; text-align: center; }
-        .tab-content { display: none; padding: 15px; animation: fadeIn 0.3s; }
+        :root { 
+            --gold-grad: linear-gradient(135deg, #ffd700 0%, #b8860b 100%); 
+            --dark-bg: #0f172a; 
+            --card-bg: rgba(255, 255, 255, 0.05); 
+            --accent-gold: #f1c40f;
+        }
+
+        /* --- COPY PROTECTION --- */
+        * { 
+            box-sizing: border-box; 
+            font-family: 'Poppins', sans-serif; 
+            transition: 0.3s;
+            -webkit-user-select: none; 
+            user-select: none; 
+        }
+
+        input, textarea, select, .copy-box span, #main-bal {
+            -webkit-user-select: text;
+            user-select: text;
+        }
+
+        body { margin: 0; background: var(--dark-bg); color: white; display: flex; justify-content: center; overflow-x: hidden; }
+        .app-container { width: 100%; max-width: 450px; min-height: 100vh; background: var(--dark-bg); position: relative; border: 1px solid rgba(255,255,255,0.1); }
+        
+        input, select, textarea { width: 100%; padding: 14px; background: var(--card-bg); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; color: white; outline: none; margin-bottom: 12px; }
+        input:focus { border-color: var(--accent-gold); }
+        
+        .btn-premium { width: 100%; padding: 16px; background: var(--gold-grad); color: black; border: none; border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; gap: 10px; text-decoration: none; text-transform: uppercase; letter-spacing: 1px; }
+
+        #auth-screen, #dashboard { display: none; }
+
+        #intro-screen { padding: 40px 25px; text-align: center; animation: fadeIn 0.8s ease-in; }
+        .star-logo { font-size: 60px; margin-bottom: 10px; animation: glow 2s infinite alternate; }
+        .intro-box { background: rgba(255, 255, 255, 0.03); border: 1px solid var(--accent-gold); padding: 25px; border-radius: 20px; margin: 25px 0; line-height: 1.6; text-align: left; position: relative; overflow: hidden; border-left: 4px solid var(--accent-gold); }
+        .intro-box h4 { color: var(--accent-gold); margin: 15px 0 5px 0; font-size: 15px; }
+        .intro-box ul { padding-left: 18px; margin: 5px 0; font-size: 13px; color: #cbd5e1; }
+        
+        .tab-content { display: none; padding: 20px; animation: fadeIn 0.4s; padding-bottom: 100px; }
         .active-tab { display: block; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        .bal-card { background: var(--card); padding: 25px; border-radius: 20px; text-align: center; margin: 15px; border: 1px solid var(--accent); }
-        .task-card { background: var(--card); padding: 15px; border-radius: 12px; margin-bottom: 10px; border-left: 4px solid var(--accent); display: flex; justify-content: space-between; align-items: center; }
-        .nav { position: fixed; bottom: 0; width: 100%; max-width: 450px; height: 75px; background: #1e293b; display: flex; border-top: 1px solid rgba(255,255,255,0.1); z-index: 1000; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes glow { from { text-shadow: 0 0 5px #fff, 0 0 10px #f1c40f; } to { text-shadow: 0 0 20px #fff, 0 0 35px #f1c40f; } }
+
+        .balance-card { background: var(--card-bg); padding: 25px; border-radius: 20px; text-align: center; margin: 20px; border: 1px solid rgba(255,215,0,0.2); }
+        .task-card { background: var(--card-bg); padding: 20px; border-radius: 15px; border: 1px solid var(--accent-gold); margin-top: 15px; text-align: center; position: relative; }
+        .price-badge { position: absolute; top: 10px; right: 10px; background: var(--accent-gold); color: black; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: bold; }
+        
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; max-width: 450px; height: 75px; background: rgba(15, 23, 42, 0.98); display: flex; border-top: 1px solid rgba(255,215,0,0.1); z-index: 1000; }
         .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 11px; color: #94a3b8; cursor: pointer; }
-        .nav-item.active { color: var(--accent); }
+        .nav-item.active { color: var(--accent-gold); }
+        .copy-box { background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; margin-top: 10px; border: 1px dashed var(--accent-gold); }
+        .hist-item { display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.05); padding: 10px 0; }
+        
+        .member-list-item { display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.03); padding: 12px; border-radius: 10px; margin-top: 10px; border: 1px solid rgba(255,255,255,0.05); }
     </style>
 </head>
 <body>
 
-<div class="app">
-    <div id="auth-screen" style="text-align: center; padding-top: 40px;">
-        <img src="https://i.ibb.co/LhbV4Vb/FB-IMG-1768455528784.jpg" style="width:100px; border-radius:50%; border:3px solid var(--accent); margin-bottom:15px;">
-        <h2 style="color:var(--accent);">POWER STAR</h2>
-        <div id="auth-form">
-            <input type="text" id="u-name" placeholder="Full Name">
-            <input type="number" id="u-phone" placeholder="WhatsApp Number">
-            <input type="password" id="u-pass" placeholder="Password">
-            <input type="text" id="u-ref" placeholder="Referral Code (Optional)">
-            <button class="btn" onclick="handleAuth()">ENTER APP</button>
+<div class="app-container">
+
+    <div id="intro-screen">
+        <div class="star-logo">⭐</div>
+        <h1 style="color:var(--accent-gold); margin:0; letter-spacing:2px;">POWER STAR</h1>
+        <p style="opacity:0.7; font-size:13px;">Brighter Future, Better Earnings</p>
+        <div class="intro-box">
+            <h3 style="color:var(--accent-gold); margin-top:0;">About Our Work</h3>
+            <p style="font-size:13px; color:#e2e8f0; margin-bottom:10px;">
+                Power Star is a premier Digital Marketing agency bridging global brands with real users. We provide organic growth while creating earning opportunities.
+            </p>
+            <h4>🛠 What We Do</h4>
+            <p style="font-size:13px; color:#e2e8f0;">We help brands boost their reach through our dedicated Power Star Team. Real humans, real engagement.</p>
+            <h4>📋 Daily Tasks</h4>
+            <ul>
+                <li><b>YouTube:</b> Subscribe & Like videos.</li>
+                <li><b>TikTok/FB:</b> Follow & Engage with pages.</li>
+                <li><b>WhatsApp:</b> Stay updated with trends.</li>
+            </ul>
+            <h4>💸 Earning & Withdraw</h4>
+            <ul>
+                <li>Rewards for every task completed.</li>
+                <li>Referral bonuses on team activity.</li>
+                <li>Min Withdraw: <b>Rs. 300</b> via EasyPaisa/JazzCash.</li>
+            </ul>
+            <p style="font-size:12px; margin-top:15px; text-align:center; font-weight:bold; color:var(--accent-gold);">"Your Hard Work, Our Platform!"</p>
+        </div>
+        <button class="btn-premium" onclick="showSection('auth-screen')">Start Earning Now</button>
+    </div>
+
+    <div id="auth-screen" style="padding:40px 25px; text-align:center;">
+        <h2 style="color:var(--accent-gold);">POWER STAR</h2>
+        <div id="register-form">
+            <input type="text" placeholder="Full Name">
+            <input type="number" placeholder="WhatsApp Number">
+            <input type="password" placeholder="Password">
+            <input type="text" placeholder="Referral Code (Optional)">
+            <button class="btn-premium" onclick="showSection('dashboard')">CREATE ACCOUNT</button>
+            <p onclick="toggleAuth(true)" style="font-size:13px; cursor:pointer;">Already have an account? <span style="color:var(--accent-gold);">Login</span></p>
+        </div>
+        <div id="login-form" style="display:none;">
+            <input type="number" placeholder="WhatsApp Number">
+            <input type="password" placeholder="Password">
+            <button class="btn-premium" onclick="showSection('dashboard')">LOGIN</button>
+            <p onclick="toggleAuth(false)" style="font-size:13px; cursor:pointer;">New here? <span style="color:var(--accent-gold);">Register</span></p>
         </div>
     </div>
 
-    <div id="dashboard" style="display:none;">
-        <img src="https://i.ibb.co/LhbV4Vb/FB-IMG-1768455528784.jpg" class="brand-img">
-        
+    <div id="dashboard">
+        <div class="balance-card">
+            <span style="font-size:12px; opacity:0.8; letter-spacing:1px;">MY BALANCE</span>
+            <h1 id="main-bal" style="color:var(--accent-gold); margin:10px 0;">Rs. 0.00</h1>
+        </div>
+
         <div id="tab-home" class="tab-content active-tab">
-            <div class="bal-card"><p style="font-size:11px;">CURRENT BALANCE</p><h1 id="user-bal" style="color:var(--accent);">Rs. 0</h1></div>
-            <h4 style="margin: 10px 5%; color: var(--accent);">Available Tasks</h4>
-            <div class="task-card"><span>Facebook Like</span> <strong>Rs. 20</strong></div>
-            <div class="task-card"><span>YouTube Sub</span> <strong>Rs. 30</strong></div>
-            <div class="task-card"><span>TikTok Follow</span> <strong>Rs. 25</strong></div>
-        </div>
-
-        <div id="tab-about" class="tab-content">
-            <h3 style="color:var(--accent); margin-bottom:15px;">App Info & Rules</h3>
-            <div style="background:var(--card); padding:15px; border-radius:12px; font-size:13px; line-height:1.6;">
-                - Minimum withdrawal: Rs. 300.<br>
-                - One account per mobile device.<br>
-                - Submit screenshots for task approval.<br><br>
-                <strong>Official Links:</strong><br>
-                <a href="https://whatsapp.com/channel/0029VbBtlLd29752E8E2z10W" style="color:var(--accent); text-decoration:none;">Join WhatsApp Group ↗️</a>
-            </div>
-        </div>
-
-        <div id="tab-wallet" class="tab-content">
-            <h3 style="margin-bottom:15px;">Account Binding</h3>
-            <div id="bind-box">
-                <input type="text" id="b-title" placeholder="Account Holder Name">
-                <select id="b-method"><option>EasyPaisa</option><option>JazzCash</option></select>
-                <input type="number" id="b-num" placeholder="Account Number">
-                <button class="btn" onclick="saveBinding()">SAVE BINDING</button>
-            </div>
-            <div id="wd-box" style="display:none; text-align:center;">
-                <div id="acc-details" style="background:rgba(46,204,113,0.1); padding:20px; border-radius:12px; color:var(--accent); border:1px solid var(--accent);"></div>
-                <input type="number" placeholder="Enter Amount" style="margin-top:20px;">
-                <button class="btn" onclick="alert('Sent!')">WITHDRAW</button>
+            <div class="task-card">
+                <span class="price-badge">Rs. 50</span>
+                <h3 style="color:var(--accent-gold)">YouTube Subscription</h3>
+                <button class="btn-premium">DO TASK</button>
             </div>
         </div>
 
         <div id="tab-team" class="tab-content">
-            <h3>My Team</h3>
-            <div style="background:var(--card); padding:15px; border-radius:10px; margin-top:15px;">
-                <p style="font-size:11px; color:#94a3b8;">Referral Link:</p>
-                <p id="ref-link" style="font-size:10px; color:var(--accent); word-break:break-all;"></p>
+            <h3 style="color:var(--accent-gold)">Team & Referral 🎁</h3>
+            <p style="font-size: 13px; margin: 0;">Total Team: <span style="color:var(--accent-gold)">0</span></p>
+            <p style="font-size: 13px; margin: 5px 0 15px 0;">Active Today: <span style="color:var(--accent-gold)">0</span></p>
+            
+            <div class="copy-box">
+                <span id="ref-link" style="font-size:10px;">https://power-star.com/?ref=user</span>
+                <button onclick="copyRef()" style="background:var(--accent-gold); border:none; padding:8px 12px; border-radius:8px; font-weight:bold; cursor:pointer;">COPY</button>
             </div>
-            <button class="btn" style="background:#ef4444; margin-top:60px;" onclick="logout()">LOGOUT</button>
+
+            <div style="margin-top: 25px;">
+                <h4 style="font-size: 14px; color: var(--accent-gold);">Direct Members Detail:</h4>
+                <div class="member-list-item">
+                    <span><b>Ali Ahmed</b><br><small style="color:#2ecc71;">Active</small></span>
+                    <span style="font-weight: bold; color: var(--accent-gold);">Rs. 150.00</span>
+                </div>
+                <div class="member-list-item">
+                    <span><b>Usman Rafiq</b><br><small style="color:#e74c3c;">Inactive</small></span>
+                    <span style="font-weight: bold; color: var(--accent-gold);">Rs. 0.00</span>
+                </div>
+            </div>
         </div>
 
-        <nav class="nav">
-            <div class="nav-item active" onclick="tab('tab-home', this)">🏠<span>Home</span></div>
-            <div class="nav-item" onclick="tab('tab-about', this)">ℹ️<span>About</span></div>
-            <div class="nav-item" onclick="tab('tab-wallet', this)">💰<span>Wallet</span></div>
-            <div class="nav-item" onclick="tab('tab-team', this)">👥<span>Team</span></div>
+        <div id="tab-wallet" class="tab-content">
+            <h3 style="color:var(--accent-gold); margin-bottom: 20px;">My Wallet 💰</h3>
+            
+            <div id="bind-section" style="background: var(--card-bg); padding: 15px; border-radius: 15px; margin-bottom: 20px;">
+                <p style="font-size: 13px; opacity: 0.8; margin-top: 0;">Link payment method:</p>
+                <input type="text" placeholder="Account Holder Name">
+                <select><option>EasyPaisa</option><option>JazzCash</option></select>
+                <input type="number" placeholder="Account Number">
+                <button class="btn-premium">Link Account</button>
+            </div>
+
+            <div id="withdraw-form" style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px;">
+                <p style="font-size: 13px; color: var(--accent-gold);">Withdraw Funds:</p>
+                <input type="number" placeholder="Amount (Min: 300)">
+                <button class="btn-premium">Withdraw Now</button>
+            </div>
+
+            <div style="display: flex; gap: 10px; margin-top: 15px;">
+                <button onclick="window.open('https://whatsapp.com/channel/0029VbBtlLd29752E8E2z10W', '_blank')" style="flex:1; background:#25d366; color:white; border:none; padding:12px; border-radius:10px; font-weight:bold; font-size:11px; cursor:pointer;">WHATSAPP</button>
+                <button onclick="window.open('https://t.me/+wrV-LempJ39lY2Fk', '_blank')" style="flex:1; background:#0088cc; color:white; border:none; padding:12px; border-radius:10px; font-weight:bold; font-size:11px; cursor:pointer;">TELEGRAM</button>
+            </div>
+
+            <div id="history-section" style="margin-top: 30px;">
+                <h4 style="font-size: 14px; border-left: 3px solid var(--accent-gold); padding-left: 10px;">Withdrawal History</h4>
+                <div style="background: var(--card-bg); border-radius: 12px; padding: 15px; margin-top: 10px; font-size: 13px;">
+                    <div class="hist-item">
+                        <span>27 Jan, 2026</span>
+                        <span style="color: #ffa500;">Pending</span>
+                        <span style="font-weight: bold;">Rs. 500</span>
+                    </div>
+                </div>
+            </div>
+
+            <button onclick="location.reload()" style="width: 100%; margin-top: 40px; padding: 12px; background: rgba(255, 68, 68, 0.1); color: #ff4444; border: 1px solid #ff4444; border-radius: 10px; font-weight: bold; cursor: pointer;">
+                LOGOUT ACCOUNT
+            </button>
+        </div>
+
+        <nav class="bottom-nav">
+            <div class="nav-item active" onclick="navTo('tab-home', this)">🏠<span>Home</span></div>
+            <div class="nav-item" onclick="navTo('tab-team', this)">👥<span>Team</span></div>
+            <div class="nav-item" onclick="navTo('tab-wallet', this)">💰<span>Wallet</span></div>
         </nav>
     </div>
 </div>
 
 <script>
-    const API = "https://sheetdb.io/api/v1/fz1504ko2kdts";
-    let myPh = localStorage.getItem('ps_ph') || "";
+ const DB_URL = "https://sheetdb.io/api/v1/fz1504ko2kdts";
+const TASK_URL = DB_URL + "?sheet=Tasks";
+const dID = navigator.userAgent.length + screen.width + screen.height; 
+let currentUser = null;
 
-    if(myPh) showDash(myPh);
+window.onload = function() {
+    checkDeviceStatus();
+    injectAdminPanels(); // Admin UI auto-add hogi bagair design kharab kiye
+};
 
-    async function handleAuth() {
-        const ph = document.getElementById('u-phone').value, ps = document.getElementById('u-pass').value, nm = document.getElementById('u-name').value, rf = document.getElementById('u-ref').value;
-        if(!ph || !ps) return alert("Fill data!");
-        try {
-            const res = await fetch(`${API}/search?Phone=${ph}`);
-            const data = await res.json();
-            const reg = data.find(u => u.Action === "REGISTRATION");
-            if(reg) {
-                if(String(reg.Password) === String(ps)) showDash(ph); else alert("Wrong Pass!");
-            } else {
-                await fetch(API, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({data:[{Phone:ph, Password:ps, "Full Name":nm, Referral:rf, Action:"REGISTRATION", Balance:"0"}]}) });
-                showDash(ph);
-            }
-        } catch(e) { alert("API Error!"); }
-    }
-
-    function showDash(ph) {
-        myPh = ph; localStorage.setItem('ps_ph', ph);
-        document.getElementById('auth-screen').style.display = 'none';
-        document.getElementById('dashboard').style.display = 'block';
-        document.getElementById('ref-link').innerText = window.location.href.split('?')[0] + "?ref=" + ph;
-        sync();
-    }
-
-    async function sync() {
-        const res = await fetch(`${API}/search?Phone=${myPh}`);
-        const data = await res.json();
-        const reg = data.find(u => u.Action === "REGISTRATION");
-        if(reg) document.getElementById('user-bal').innerText = "Rs. " + (reg.Balance || "0");
-        const bnd = data.find(u => u.Action === "BINDING");
-        if(bnd) {
-            document.getElementById('bind-box').style.display = 'none';
-            document.getElementById('wd-box').style.display = 'block';
-            document.getElementById('acc-details').innerText = "Linked: " + bnd.Extra_Info;
+function checkDeviceStatus() {
+    fetch(`${DB_URL}/search?device_id=${dID}`)
+    .then(r => r.json()).then(data => {
+        if(data.length > 0) {
+            currentUser = data[0];
+            loadDashboard();
+            fetchLiveTasks();
+        } else {
+            showSection('intro-screen');
         }
-    }
+    });
+}
 
-    async function saveBinding() {
-        const info = document.getElementById('b-method').value + ": " + document.getElementById('b-num').value + " (" + document.getElementById('b-title').value + ")";
-        await fetch(API, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({data:[{Phone: myPh, Action: "BINDING", Extra_Info: info}]}) });
-        alert("Success!"); sync();
-    }
+// --- AUTH & REFERRAL SYSTEM ---
+function registerUser() {
+    const name = document.querySelector('#register-form input[placeholder="Full Name"]').value;
+    const num = document.querySelector('#register-form input[placeholder="WhatsApp Number"]').value;
+    const pass = document.querySelector('#register-form input[placeholder="Password"]').value;
+    const ref = document.querySelector('#register-form input[placeholder*="Referral"]').value;
 
-    function tab(t, el) {
-        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active-tab'));
-        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-        document.getElementById(t).classList.add('active-tab'); el.classList.add('active');
-        sync();
+    if(!name || !num || !pass) return alert("All fields are required!");
+
+    fetch(`${DB_URL}/search?number=${num}`).then(r => r.json()).then(res => {
+        if(res.length > 0) return alert("Number already exists!");
+        
+        const userData = {
+            name, number: num, password: pass, device_id: dID, 
+            balance: 0, wallet_status: 'unlocked', referred_by: ref, team: 0
+        };
+
+        fetch(DB_URL, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(userData)
+        }).then(() => {
+            // Agar kisi ke referral se aaya hai toh uska team count update karna
+            if(ref) updateReferrerTeam(ref);
+            checkDeviceStatus();
+        });
+    });
+}
+
+function updateReferrerTeam(refNum) {
+    fetch(`${DB_URL}/search?number=${refNum}`).then(r => r.json()).then(data => {
+        if(data.length > 0) {
+            let newTeam = parseInt(data[0].team || 0) + 1;
+            fetch(`${DB_URL}/number/${refNum}`, {
+                method: 'PATCH',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({team: newTeam})
+            });
+        }
+    });
+}
+
+function loginUser() {
+    const num = document.querySelector('#login-form input[placeholder="WhatsApp Number"]').value;
+    const pass = document.querySelector('#login-form input[placeholder="Password"]').value;
+
+    fetch(`${DB_URL}/search?number=${num}&password=${pass}`).then(r => r.json()).then(res => {
+        if(res.length > 0) {
+            if(res[0].device_id != dID) return alert("This account is locked to another device!");
+            currentUser = res[0];
+            loadDashboard();
+            fetchLiveTasks();
+        } else alert("Invalid Login!");
+    });
+}
+
+// --- DASHBOARD & WALLET LOCK ---
+function loadDashboard() {
+    showSection('dashboard');
+    document.getElementById('main-bal').innerText = "Rs. " + currentUser.balance;
+    document.getElementById('ref-link').innerText = "https://power-star.com/?ref=" + currentUser.number;
+    document.querySelector('#tab-team span').innerText = currentUser.team || 0;
+    
+    if(currentUser.wallet_status === 'locked') {
+        document.getElementById('bind-section').style.display = 'none';
+        document.querySelector('#tab-wallet h3').innerText = "Wallet (Locked) ✅";
     }
-    function logout() { localStorage.clear(); location.reload(); }
+}
+
+function bindWallet() {
+    const holder = document.querySelector('#bind-section input[placeholder="Account Holder Name"]').value;
+    const acc = document.querySelector('#bind-section input[placeholder="Account Number"]').value;
+    const type = document.querySelector('#bind-section select').value;
+
+    if(!holder || !acc) return alert("Enter details!");
+
+    fetch(`${DB_URL}/number/${currentUser.number}`, {
+        method: 'PATCH',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+            wallet_name: holder, wallet_number: acc, wallet_type: type, wallet_status: 'locked'
+        })
+    }).then(() => {
+        alert("Wallet Bound! You can't change it now.");
+        location.reload();
+    });
+}
+
+// --- TASK SYSTEM (Video & Manual) ---
+function fetchLiveTasks() {
+    const container = document.getElementById('tab-home');
+    fetch(TASK_URL).then(r => r.json()).then(tasks => {
+        if(tasks.length === 0) return;
+        container.innerHTML = "";
+        tasks.slice(0, 10).forEach(t => { // Admin daily 1-10 set karega
+            container.innerHTML += `
+                <div class="task-card">
+                    <span class="price-badge">Rs. ${t.amount}</span>
+                    <h3 style="color:var(--accent-gold)">${t.title}</h3>
+                    <div id="v-box-${t.task_id}" style="display:none; width:100%; background:#334155; height:8px; border-radius:10px; margin:10px 0;">
+                        <div id="v-bar-${t.task_id}" style="width:0%; height:100%; background:var(--accent-gold);"></div>
+                    </div>
+                    <button class="btn-premium" id="btn-${t.task_id}" onclick="handleTask('${t.type}', ${t.timer}, ${t.amount}, '${t.link}', '${t.task_id}')">DO TASK</button>
+                </div>`;
+        });
+    });
+}
+
+function handleTask(type, time, amt, link, id) {
+    window.open(link, '_blank');
+    const btn = document.getElementById(`btn-${id}`);
+    
+    if(type === 'video') {
+        const bar = document.getElementById(`v-bar-${id}`);
+        const box = document.getElementById(`v-box-${id}`);
+        btn.disabled = true; box.style.display = 'block';
+        
+        let width = 0;
+        let timer = setInterval(() => {
+            width += (100 / time);
+            bar.style.width = width + "%";
+            if(width >= 100) {
+                clearInterval(timer);
+                completeTask(amt);
+            }
+        }, 1000);
+    } else {
+        // Manual verification for subscription
+        let proof = prompt("Screenshot upload kar dein ya Status likhen:");
+        if(proof) alert("Task submitted! Admin balance update karega.");
+    }
+}
+
+function completeTask(amt) {
+    let newBal = parseFloat(currentUser.balance) + parseFloat(amt);
+    fetch(`${DB_URL}/number/${currentUser.number}`, {
+        method: 'PATCH',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({balance: newBal})
+    }).then(() => {
+        alert("Reward Rs. " + amt + " added!");
+        location.reload();
+    });
+}
+
+// --- ADMIN CONTROL PANELS ---
+function injectAdminPanels() {
+    const adminHTML = `
+        <div id="admin-panel" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:#0f172a; z-index:10000; padding:20px; overflow-y:auto;">
+            <h2 id="adm-head" style="color:#f1c40f">Admin Control</h2>
+            <div id="adm-content"></div>
+            <button class="btn-premium" onclick="location.reload()" style="background:red; color:white;">Exit Admin</button>
+        </div>`;
+    document.body.insertAdjacentHTML('beforeend', adminHTML);
+}
+
+function checkCodes(val) {
+    const panel = document.getElementById('admin-panel');
+    const content = document.getElementById('adm-content');
+    
+    if(val === "Hussain@2026") {
+        panel.style.display = 'block';
+        document.getElementById('adm-head').innerText = "Task Announcement";
+        content.innerHTML = `
+            <input id="at-title" placeholder="Task Title">
+            <input id="at-link" placeholder="Video Link">
+            <input id="at-time" type="number" placeholder="Time in Seconds">
+            <input id="at-amt" type="number" placeholder="Amount">
+            <select id="at-type"><option value="video">Video</option><option value="manual">Manual</option></select>
+            <button class="btn-premium" onclick="publishTask()">Publish Task</button>`;
+    } else if(val === "Hussain@2025") {
+        panel.style.display = 'block';
+        document.getElementById('adm-head').innerText = "Database & Withdrawals";
+        fetchUsersAdmin();
+    }
+}
+
+function publishTask() {
+    const data = {
+        task_id: Date.now(),
+        title: document.getElementById('at-title').value,
+        link: document.getElementById('at-link').value,
+        timer: document.getElementById('at-time').value,
+        amount: document.getElementById('at-amt').value,
+        type: document.getElementById('at-type').value
+    };
+    fetch(TASK_URL, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(data)
+    }).then(() => alert("Task Published!"));
+}
+
+function fetchUsersAdmin() {
+    const content = document.getElementById('adm-content');
+    fetch(DB_URL).then(r => r.json()).then(users => {
+        content.innerHTML = users.map(u => `
+            <div style="background:rgba(255,255,255,0.05); padding:10px; margin-bottom:10px; border-radius:10px;">
+                ${u.name} (${u.number})<br>Bal: Rs.${u.balance} | Team: ${u.team}
+                <button onclick="promptUpdate('${u.number}')" style="font-size:10px; padding:5px;">Edit Bal</button>
+            </div>
+        `).join('');
+    });
+}
+
+// Withdrawal input par code check lagana
+document.querySelector('#withdraw-form input').addEventListener('input', function(e) {
+    checkCodes(e.target.value);
+});
+
+function copyRef() {
+    const linkText = document.getElementById('ref-link').innerText;
+    navigator.clipboard.writeText(linkText).then(() => alert("Referral Link Copied!"));
+}
 </script>
 </body>
 </html>
