@@ -144,7 +144,7 @@ window.onload = async () => {
         try {
             const res = await fetch(`${API}/search?number=${savedNum}&device_id=${dID}`);
             const data = await res.json();
-            if (data.length > 0) {
+            if (data && data.length > 0) {
                 user = data[0];
                 startSystem();
             } else { showSection('intro-screen'); }
@@ -166,27 +166,48 @@ async function auth(mode) {
 
         if (mode === 'reg') {
             if (res.length > 0) return alert("Number Already Registered!");
+            
+            // Fix: Referral value check
+            const refValue = inputs[3] ? inputs[3].value : "Direct";
+
             const body = { 
-                name: inputs[0].value, number: num, password: pass, device_id: dID, 
-                balance: 0, wallet: "", wallet_status: "None", ref_by: inputs[3].value || "Direct" 
+                name: inputs[0].value, 
+                number: num, 
+                password: pass, 
+                device_id: dID, 
+                balance: "0", 
+                wallet: "", 
+                wallet_status: "None", 
+                ref_by: refValue || "Direct" 
             };
-            await fetch(API, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(body) });
+            
+            await fetch(API, { 
+                method: 'POST', 
+                headers: {'Content-Type': 'application/json'}, 
+                body: JSON.stringify(body) 
+            });
             localStorage.setItem('ps_num', num);
         } else {
             if (res.length === 0 || res[0].password !== pass) return alert("Invalid Login!");
-            // Update Device ID to Current Device
-            await fetch(`${API}/number/${num}`, { method: 'PATCH', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({device_id: dID}) });
+            // Update Device ID
+            await fetch(`${API}/number/${num}`, { 
+                method: 'PATCH', 
+                headers: {'Content-Type': 'application/json'}, 
+                body: JSON.stringify({device_id: dID}) 
+            });
             localStorage.setItem('ps_num', num);
         }
         location.reload();
-    } catch(e) { alert("Server Error! Check Internet."); }
+    } catch(e) { 
+        alert("Connection Error! SheetDB settings check karein."); 
+    }
 }
 
 // 3. DASHBOARD INITIALIZATION
 function startSystem() {
     showSection('dashboard');
-    document.getElementById('main-bal').innerText = "Rs. " + (user.balance || 0);
-    document.getElementById('ref-link').innerText = "https://power-star.com/?ref=" + user.number;
+    document.getElementById('main-bal').innerText = "Rs. " + (user.balance || "0.00");
+    document.getElementById('ref-link').innerText = "https://powerstar4455.github.io/PSSN-Official-/?ref=" + user.number;
     loadTasks();
     renderWalletUI();
 }
@@ -211,7 +232,7 @@ async function loadTasks() {
                 </button>
             </div>`;
         });
-        document.getElementById('tasks-area').innerHTML = html || "<p>No tasks for today.</p>";
+        document.getElementById('tasks-area').innerHTML = html || "<p>No tasks available.</p>";
     } catch(e) { document.getElementById('tasks-area').innerText = "Error loading tasks."; }
 }
 
@@ -223,7 +244,7 @@ function handleTaskWork(id, link, type, amt, time) {
     if (type === 'video' && time > 0) {
         document.getElementById('progress-' + id).style.display = 'block';
         let current = 0;
-        let total = time * 60; // Minutes to Seconds
+        let total = time * 60; 
         let timer = setInterval(() => {
             current++;
             let percent = (current / total) * 100;
@@ -237,7 +258,7 @@ function handleTaskWork(id, link, type, amt, time) {
             }
         }, 1000);
     } else if (type === 'proof') {
-        alert("Verification Task: Send Screenshot to Admin. Your ID: " + user.number);
+        alert("Verification Task: Send Screenshot to Admin. Your Number: " + user.number);
         btn.innerText = "PENDING REVIEW";
     } else {
         claimReward(amt);
@@ -260,17 +281,16 @@ function renderWalletUI() {
             <h3 style="color:var(--accent-gold)">Wallet Status 💰</h3>
             <div class="copy-box"><span>Details: ${user.wallet}</span></div>
             <div style="margin-top:15px; padding:15px; border-radius:12px; background:rgba(255,255,255,0.03); border:1px solid ${statusColor}">
-                <p style="margin:0; font-size:13px; opacity:0.8;">Status:</p>
+                <p style="margin:0; font-size:13px; opacity:0.8;">Withdrawal Status:</p>
                 <h2 style="margin:5px 0; color:${statusColor}">${user.wallet_status || 'Pending'}</h2>
             </div>
-            <p style="font-size:11px; opacity:0.5; margin-top:15px;">Wallet details are locked. Contact support to change.</p>
         `;
     } else {
         walletDiv.innerHTML = `
             <h3 style="color:var(--accent-gold)">Bind Wallet 💳</h3>
             <select id="w-method"><option>EasyPaisa</option><option>JazzCash</option></select>
             <input id="w-addr" placeholder="Account Number">
-            <button class="btn-premium" onclick="bindWallet()">BIND & REQUEST WITHDRAW</button>
+            <button class="btn-premium" onclick="bindWallet()">BIND & WITHDRAW</button>
         `;
     }
 }
@@ -284,7 +304,7 @@ async function bindWallet() {
         headers: {'Content-Type': 'application/json'}, 
         body: JSON.stringify({wallet: method + ": " + addr, wallet_status: "Pending"}) 
     });
-    alert("Wallet Bound! Admin will process soon.");
+    alert("Wallet Bound!");
     location.reload();
 }
 
@@ -309,7 +329,7 @@ function openAdmin(mode) {
             <button class="btn-premium" onclick="saveTaskAdmin()">SAVE & PUBLISH</button>
             <button onclick="location.reload()" style="background:red; color:white; width:100%; border:none; padding:10px; border-radius:12px; margin-top:10px;">EXIT</button>`;
     } else {
-        layer.innerHTML = `<h3>Database Admin</h3><p>Manage Withdrawals on SheetDB.io Dashboard.</p><button onclick="location.reload()">CLOSE</button>`;
+        layer.innerHTML = `<h3>Database Admin</h3><p>Manage Withdrawals on SheetDB Dashboard.</p><button onclick="location.reload()">CLOSE</button>`;
     }
 }
 
@@ -339,6 +359,8 @@ function copyRef() {
     navigator.clipboard.writeText(link);
     alert("Referral Link Copied!");
 }
-</script>
+    
+</script>  
+    
 </body>
 </html>
