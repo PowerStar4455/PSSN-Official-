@@ -127,13 +127,13 @@
     <input id="at" placeholder="Task Title">
     <input id="al" placeholder="Task Link">
     <input id="aa" placeholder="Task Amount">
-    <button class="btn-premium" onclick="addTask()">SAVE TASK</button>
+    <button class="btn-premium" onclick="saveTaskAdmin()">SAVE TASK</button>
     <button onclick="location.reload()" style="background:red; color:white; border:none; padding:15px; width:100%; border-radius:12px; margin-top:20px;">EXIT</button>
 </div>
 
 <script>
 // --- MASTER CONFIGURATION ---
-const API = "https://sheetdb.io/api/v1/fz1504ko2kdts";
+const API = "https://sheetdb.io/api/v1/vyntcjclg5905"; // Nayi API ID Updated
 const dID = navigator.userAgent.length + screen.width + screen.height; 
 let user = null;
 
@@ -142,7 +142,7 @@ window.onload = async () => {
     const savedNum = localStorage.getItem('ps_num');
     if (savedNum) {
         try {
-            // Search explicitly in Users sheet
+            // "Users" tab mein search karna
             const res = await fetch(`${API}/search?number=${savedNum}&sheet=Users`);
             const data = await res.json();
             if (data && data.length > 0) {
@@ -153,7 +153,7 @@ window.onload = async () => {
     } else { showSection('intro-screen'); }
 };
 
-// 2. AUTH SYSTEM (Revised & Verified)
+// 2. AUTH SYSTEM (Verified)
 async function auth(mode) {
     const inputs = document.querySelectorAll(mode === 'reg' ? '#register-form input' : '#login-form input');
     const num = mode === 'reg' ? inputs[1].value.trim() : inputs[0].value.trim();
@@ -162,7 +162,6 @@ async function auth(mode) {
     if(!num || !pass) return alert("Please fill all fields!");
 
     try {
-        // Search in Users tab
         const check = await fetch(`${API}/search?number=${num}&sheet=Users`);
         const res = await check.json();
 
@@ -182,28 +181,22 @@ async function auth(mode) {
                 ref_by: refValue 
             };
             
-            // Post to Users tab
+            // "Users" tab mein data bhejni hai
             const response = await fetch(`${API}?sheet=Users`, { 
                 method: 'POST', 
                 headers: {'Content-Type': 'application/json'}, 
                 body: JSON.stringify(body) 
             });
 
-            if(!response.ok) throw new Error("SheetDB Connection Error");
+            if(!response.ok) throw new Error("API Connection Failed");
             localStorage.setItem('ps_num', num);
         } else {
             if (res.length === 0 || res[0].password !== pass) return alert("Invalid Login!");
-            // Patch specifically in Users tab
-            await fetch(`${API}/number/${num}?sheet=Users`, { 
-                method: 'PATCH', 
-                headers: {'Content-Type': 'application/json'}, 
-                body: JSON.stringify({device_id: String(dID)}) 
-            });
             localStorage.setItem('ps_num', num);
         }
         location.reload();
     } catch(e) { 
-        alert("Error: SheetDB check karein. Make sure 'Users' sheet exists!"); 
+        alert("System Error: SheetDB settings check karein aur ensure karein ke Tab ka naam 'Users' hai."); 
     }
 }
 
@@ -213,12 +206,12 @@ function startSystem() {
     document.getElementById('main-bal').innerText = "Rs. " + (user.balance || "0.00");
     document.getElementById('ref-link').innerText = "https://powerstar4455.github.io/PSSN-Official-/?ref=" + user.number;
     loadTasks();
-    renderWalletUI();
 }
 
 // 4. TASK SYSTEM
 async function loadTasks() {
     try {
+        // "Tasks" tab se data uthana
         const res = await fetch(`${API}?sheet=Tasks`);
         const tasks = await res.json();
         let html = "";
@@ -251,35 +244,21 @@ async function claimReward(amt) {
     location.reload();
 }
 
-// 5. WALLET & ADMIN (Checked)
-async function bindWallet() {
-    const method = document.getElementById('w-method').value;
-    const addr = document.getElementById('w-addr').value;
-    if (!addr) return alert("Please enter account number!");
-    await fetch(`${API}/number/${user.number}?sheet=Users`, { 
-        method: 'PATCH', 
-        headers: {'Content-Type': 'application/json'}, 
-        body: JSON.stringify({wallet: method + ": " + addr, wallet_status: "Pending"}) 
-    });
-    alert("Wallet Bound!");
-    location.reload();
-}
-
-async function saveTaskAdmin() {
-    const data = { id: Date.now(), title: document.getElementById('at').value, link: document.getElementById('al').value, amount: document.getElementById('aa').value, time: document.getElementById('ati').value, type: document.getElementById('atp').value };
-    await fetch(`${API}?sheet=Tasks`, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(data) });
-    alert("Task Added!"); location.reload();
-}
-
-// UI HELPERS (Keep as they are)
+// UI HELPERS (Sari Screens ko manage karne ke liye)
 function showSection(id) { 
-    ['intro-screen', 'auth-screen', 'dashboard'].forEach(s => document.getElementById(s).style.display = 'none');
-    document.getElementById(id).style.display = 'block'; 
+    ['intro-screen', 'auth-screen', 'dashboard'].forEach(s => {
+        const el = document.getElementById(s);
+        if(el) el.style.display = 'none';
+    });
+    const target = document.getElementById(id);
+    if(target) target.style.display = 'block'; 
 }
+
 function toggleAuth(isL) { 
     document.getElementById('register-form').style.display = isL ? 'none' : 'block'; 
     document.getElementById('login-form').style.display = isL ? 'block' : 'none'; 
 }
+
 function navTo(id, el) { 
     document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active-tab')); 
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active')); 
