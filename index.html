@@ -132,139 +132,180 @@
 </div>
 
 <script>
-// --- MASTER CONFIGURATION ---
-const API = "https://sheetdb.io/api/v1/vyntcjclg5905"; // Nayi API ID Updated
-const dID = navigator.userAgent.length + screen.width + screen.height; 
-let user = null;
+    // --- CONFIGURATION ---
+    const USER_API = "https://sheetdb.io/api/v1/vyntcjclg5905"; // Users Database
+    const TASK_API = "https://sheetdb.io/api/v1/1e9n0bdrpmh2f"; // Admin & Tasks Control
 
-// 1. AUTO-LOGIN & DATA PROTECTION
-window.onload = async () => {
-    const savedNum = localStorage.getItem('ps_num');
-    if (savedNum) {
-        try {
-            // "Users" tab mein search karna
-            const res = await fetch(`${API}/search?number=${savedNum}&sheet=Users`);
-            const data = await res.json();
-            if (data && data.length > 0) {
-                user = data[0];
-                startSystem();
-            } else { showSection('intro-screen'); }
-        } catch(e) { showSection('intro-screen'); }
-    } else { showSection('intro-screen'); }
-};
+    let isLogin = false;
+    let currentBalance = 0.00;
+    let userPhone = localStorage.getItem('user_phone') || "";
 
-// 2. AUTH SYSTEM (Verified)
-async function auth(mode) {
-    const inputs = document.querySelectorAll(mode === 'reg' ? '#register-form input' : '#login-form input');
-    const num = mode === 'reg' ? inputs[1].value.trim() : inputs[0].value.trim();
-    const pass = mode === 'reg' ? inputs[2].value.trim() : inputs[1].value.trim();
-
-    if(!num || !pass) return alert("Please fill all fields!");
-
-    try {
-        const check = await fetch(`${API}/search?number=${num}&sheet=Users`);
-        const res = await check.json();
-
-        if (mode === 'reg') {
-            if (res.length > 0) return alert("Number Already Registered!");
-            
-            const refValue = (inputs[3] && inputs[3].value) ? inputs[3].value : "Direct";
-
-            const body = { 
-                name: inputs[0].value, 
-                number: num, 
-                password: pass, 
-                device_id: String(dID), 
-                balance: 0, 
-                wallet: "", 
-                wallet_status: "None", 
-                ref_by: refValue 
-            };
-            
-            // "Users" tab mein data bhejni hai
-            const response = await fetch(`${API}?sheet=Users`, { 
-                method: 'POST', 
-                headers: {'Content-Type': 'application/json'}, 
-                body: JSON.stringify(body) 
-            });
-
-            if(!response.ok) throw new Error("API Connection Failed");
-            localStorage.setItem('ps_num', num);
-        } else {
-            if (res.length === 0 || res[0].password !== pass) return alert("Invalid Login!");
-            localStorage.setItem('ps_num', num);
-        }
-        location.reload();
-    } catch(e) { 
-        alert("System Error: SheetDB settings check karein aur ensure karein ke Tab ka naam 'Users' hai."); 
+    // Agar user pehle se login hai to seedha dashboard dikhao
+    if(userPhone) {
+        document.getElementById('auth-screen').style.display = 'none';
+        document.getElementById('dashboard').style.display = 'block';
+        document.getElementById('u-id').innerText = "PK-" + userPhone.slice(-4);
+        syncData();
     }
-}
 
-// 3. DASHBOARD INITIALIZATION
-function startSystem() {
-    showSection('dashboard');
-    document.getElementById('main-bal').innerText = "Rs. " + (user.balance || "0.00");
-    document.getElementById('ref-link').innerText = "https://powerstar4455.github.io/PSSN-Official-/?ref=" + user.number;
-    loadTasks();
-}
+    // --- AUTH SLIDE SYSTEM (Register/Login Switch) ---
+    function toggleAuth() {
+        const slider = document.getElementById('auth-slider');
+        const reg = document.getElementById('register-form');
+        const log = document.getElementById('login-form');
+        const bR = document.getElementById('btn-reg');
+        const bL = document.getElementById('btn-login');
 
-// 4. TASK SYSTEM
-async function loadTasks() {
-    try {
-        // "Tasks" tab se data uthana
-        const res = await fetch(`${API}?sheet=Tasks`);
-        const tasks = await res.json();
-        let html = "";
-        tasks.forEach(t => {
-            html += `
-            <div class="task-card">
-                <span class="price-badge">Rs. ${t.amount}</span>
-                <h3>${t.title}</h3>
-                <p style="font-size:12px; opacity:0.7;">${t.description || 'Watch/Follow to earn'}</p>
-                <div id="progress-${t.id}" style="height:6px; background:rgba(255,255,255,0.1); margin:10px 0; display:none; border-radius:10px; overflow:hidden;">
-                    <div id="bar-${t.id}" style="height:100%; background:var(--accent-gold); width:0%; transition: 0.1s linear;"></div>
-                </div>
-                <button class="btn-premium" id="btn-${t.id}" onclick="handleTaskWork('${t.id}', '${t.link}', '${t.type}', ${t.amount}, ${t.time || 0})">
-                    ${t.type === 'video' ? 'WATCH VIDEO' : 'DO TASK'}
-                </button>
-            </div>`;
+        if(!isLogin) {
+            slider.style.left = "calc(50% - 5px)";
+            reg.style.left = "-110%"; reg.style.opacity = "0";
+            log.style.left = "0"; log.style.opacity = "1";
+            bR.classList.remove('active'); bL.classList.add('active');
+            isLogin = true;
+        } else {
+            slider.style.left = "5px";
+            reg.style.left = "0"; reg.style.opacity = "1";
+            log.style.left = "110%"; log.style.opacity = "0";
+            bL.classList.remove('active'); bR.classList.add('active');
+            isLogin = false;
+        }
+    }
+
+    // --- MAIN ENTRY FUNCTION (Login/Registration) ---
+    async function enterApp(type) {
+        const ph = type === 'reg' ? document.getElementById('r-phone').value : document.getElementById('l-phone').value;
+        const ps = type === 'reg' ? document.getElementById('r-pass').value : document.getElementById('l-pass').value;
+        const nm = document.getElementById('r-name').value;
+        const rf = document.getElementById('r-ref') ? document.getElementById('r-ref').value : "";
+
+        if(!ph || !ps) return alert("Please enter phone and password!");
+
+        try {
+            const res = await fetch(`${USER_API}/search?Phone=${ph}`);
+            const data = await res.json();
+            const user = data.find(u => u.Action === "REGISTRATION");
+
+            if(type === 'reg') {
+                if(user) return alert("This number is already registered!");
+                
+                // Registration Logic
+                await fetch(USER_API, { 
+                    method: 'POST', 
+                    headers: {'Content-Type':'application/json'}, 
+                    body: JSON.stringify({data:[{
+                        "Phone": ph, "Password": ps, "Full Name": nm, 
+                        "Referral": rf, "Action": "REGISTRATION", "Balance": "0"
+                    }]}) 
+                });
+                loginDone(ph);
+            } else {
+                // Login Logic
+                if(user && String(user.Password) === String(ps)) {
+                    loginDone(ph);
+                } else {
+                    alert("Invalid Phone or Password!");
+                }
+            }
+        } catch(e) { alert("Server connection failed!"); }
+    }
+
+    function loginDone(ph) {
+        userPhone = ph;
+        localStorage.setItem('user_phone', ph);
+        document.getElementById('auth-screen').style.display = 'none';
+        document.getElementById('dashboard').style.display = 'block';
+        document.getElementById('u-id').innerText = "PK-" + ph.slice(-4);
+        syncData();
+    }
+
+    // --- DATA SYNC (Dono Sheets se data lana) ---
+    async function syncData() {
+        try {
+            // 1. User Stats (Users Sheet)
+            const uRes = await fetch(`${USER_API}/search?Phone=${userPhone}`);
+            const uData = await uRes.json();
+            
+            const regRow = uData.find(u => u.Action === "REGISTRATION");
+            if(regRow) {
+                currentBalance = parseFloat(regRow.Balance || 0);
+                document.getElementById('main-bal').innerText = "Rs. " + currentBalance.toFixed(2);
+            }
+
+            const bndRow = uData.find(u => u.Action === "BINDING");
+            if(bndRow) {
+                document.getElementById('bind-inputs').style.display = 'none';
+                document.getElementById('bind-saved').style.display = 'block';
+                document.getElementById('saved-details').innerText = bndRow.Extra_Info;
+            }
+
+            // 2. Announcements & Tasks (Task Sheet)
+            const tRes = await fetch(TASK_API);
+            const tData = await tRes.json();
+            
+            const ann = tData.find(t => t.Action === "ANNOUNCEMENT");
+            if(ann) document.getElementById('news-text').innerText = ann.Extra_Info;
+
+            const tasks = tData.filter(t => t.Action === "TASK");
+            const taskList = document.getElementById('task-list');
+            if(tasks.length > 0) {
+                taskList.innerHTML = ""; 
+                tasks.forEach(tk => {
+                    taskList.innerHTML += `
+                        <div class="task-card">
+                            <p><strong>${tk.Extra_Info}</strong></p>
+                            <button class="btn-premium" style="padding:8px; background:#3498db; width:auto;" onclick="window.open('${tk.Link}')">View Task</button>
+                        </div>`;
+                });
+            }
+        } catch(e) { console.log("Background sync error"); }
+    }
+
+    // --- WALLET BINDING ---
+    async function bindAccount() {
+        const name = document.getElementById('acc-name').value;
+        const type = document.getElementById('acc-type').value;
+        const num = document.getElementById('acc-num').value;
+        if(!name || !num) return alert("Fill all account details!");
+
+        const info = `${type}: ${num} (${name})`;
+        await fetch(USER_API, { 
+            method: 'POST', 
+            headers: {'Content-Type':'application/json'}, 
+            body: JSON.stringify({data:[{ "Phone": userPhone, "Action": "BINDING", "Extra_Info": info }]}) 
         });
-        document.getElementById('tasks-area').innerHTML = html || "<p>No tasks available.</p>";
-    } catch(e) { document.getElementById('tasks-area').innerText = "Error loading tasks."; }
-}
+        alert("Account Bound Successfully!");
+        syncData();
+    }
 
-async function claimReward(amt) {
-    const newBal = parseFloat(user.balance || 0) + parseFloat(amt);
-    await fetch(`${API}/number/${user.number}?sheet=Users`, { 
-        method: 'PATCH', 
-        headers: {'Content-Type': 'application/json'}, 
-        body: JSON.stringify({balance: newBal}) 
-    });
-    alert("Reward Added!");
-    location.reload();
-}
+    // --- WITHDRAWAL ---
+    async function requestWithdrawal() {
+        const amt = document.getElementById('withdraw-amt').value;
+        if(!amt || amt < 500) return alert("Minimum withdrawal is 500");
+        if(amt > currentBalance) return alert("Insufficient Balance!");
 
-// UI HELPERS (Sari Screens ko manage karne ke liye)
-function showSection(id) { 
-    ['intro-screen', 'auth-screen', 'dashboard'].forEach(s => {
-        const el = document.getElementById(s);
-        if(el) el.style.display = 'none';
-    });
-    const target = document.getElementById(id);
-    if(target) target.style.display = 'block'; 
-}
+        await fetch(USER_API, { 
+            method: 'POST', 
+            headers: {'Content-Type':'application/json'}, 
+            body: JSON.stringify({data:[{ "Phone": userPhone, "Action": "WITHDRAW_REQUEST", "Extra_Info": "Amount: Rs." + amt }]}) 
+        });
+        alert("Withdrawal request submitted!");
+    }
 
-function toggleAuth(isL) { 
-    document.getElementById('register-form').style.display = isL ? 'none' : 'block'; 
-    document.getElementById('login-form').style.display = isL ? 'block' : 'none'; 
-}
+    // --- NAVIGATION ---
+    function navTo(id, el) {
+        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active-tab'));
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        document.getElementById(id).classList.add('active-tab');
+        el.classList.add('active');
+        syncData();
+    }
 
-function navTo(id, el) { 
-    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active-tab')); 
-    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active')); 
-    document.getElementById(id).classList.add('active-tab'); 
-    el.classList.add('active'); 
-}
+    // --- ADMIN KEY SHORTCUT ---
+    function triggerAdmin() {
+        let key = prompt("Enter Admin Key:");
+        if(key === "03412049729") {
+            alert("Admin features are now handled via Google Sheets directly!");
+        }
 </script>  
     
 </body>
