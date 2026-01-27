@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,60 +12,38 @@
             --card-bg: rgba(255, 255, 255, 0.05); 
             --accent-gold: #f1c40f;
         }
-
-        /* --- COPY PROTECTION --- */
-        * { 
-            box-sizing: border-box; 
-            font-family: 'Poppins', sans-serif; 
-            transition: 0.3s;
-            -webkit-user-select: none; 
-            user-select: none; 
-        }
-
-        input, textarea, select, .copy-box span, #main-bal {
-            -webkit-user-select: text;
-            user-select: text;
-        }
-
+        * { box-sizing: border-box; font-family: 'Poppins', sans-serif; transition: 0.3s; -webkit-user-select: none; user-select: none; }
+        input, textarea, select, .copy-box span, #main-bal { -webkit-user-select: text; user-select: text; }
         body { margin: 0; background: var(--dark-bg); color: white; display: flex; justify-content: center; overflow-x: hidden; }
         .app-container { width: 100%; max-width: 450px; min-height: 100vh; background: var(--dark-bg); position: relative; border: 1px solid rgba(255,255,255,0.1); }
-        
         input, select, textarea { width: 100%; padding: 14px; background: var(--card-bg); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; color: white; outline: none; margin-bottom: 12px; }
         input:focus { border-color: var(--accent-gold); }
-        
         .btn-premium { width: 100%; padding: 16px; background: var(--gold-grad); color: black; border: none; border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; gap: 10px; text-decoration: none; text-transform: uppercase; letter-spacing: 1px; }
-
         #auth-screen, #dashboard { display: none; }
-
         #intro-screen { padding: 40px 25px; text-align: center; animation: fadeIn 0.8s ease-in; }
         .star-logo { font-size: 60px; margin-bottom: 10px; animation: glow 2s infinite alternate; }
         .intro-box { background: rgba(255, 255, 255, 0.03); border: 1px solid var(--accent-gold); padding: 25px; border-radius: 20px; margin: 25px 0; line-height: 1.6; text-align: left; position: relative; overflow: hidden; border-left: 4px solid var(--accent-gold); }
         .intro-box h4 { color: var(--accent-gold); margin: 15px 0 5px 0; font-size: 15px; }
         .intro-box ul { padding-left: 18px; margin: 5px 0; font-size: 13px; color: #cbd5e1; }
-        
         .tab-content { display: none; padding: 20px; animation: fadeIn 0.4s; padding-bottom: 100px; }
         .active-tab { display: block; }
-
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes glow { from { text-shadow: 0 0 5px #fff, 0 0 10px #f1c40f; } to { text-shadow: 0 0 20px #fff, 0 0 35px #f1c40f; } }
-
         .balance-card { background: var(--card-bg); padding: 25px; border-radius: 20px; text-align: center; margin: 20px; border: 1px solid rgba(255,215,0,0.2); }
         .task-card { background: var(--card-bg); padding: 20px; border-radius: 15px; border: 1px solid var(--accent-gold); margin-top: 15px; text-align: center; position: relative; }
         .price-badge { position: absolute; top: 10px; right: 10px; background: var(--accent-gold); color: black; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: bold; }
-        
         .bottom-nav { position: fixed; bottom: 0; width: 100%; max-width: 450px; height: 75px; background: rgba(15, 23, 42, 0.98); display: flex; border-top: 1px solid rgba(255,215,0,0.1); z-index: 1000; }
         .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 11px; color: #94a3b8; cursor: pointer; }
         .nav-item.active { color: var(--accent-gold); }
         .copy-box { background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; margin-top: 10px; border: 1px dashed var(--accent-gold); }
         .hist-item { display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.05); padding: 10px 0; }
-        
         .member-list-item { display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.03); padding: 12px; border-radius: 10px; margin-top: 10px; border: 1px solid rgba(255,255,255,0.05); }
+        #adm-layer { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:#0f172a; z-index:10001; padding:20px; overflow-y:auto; }
     </style>
 </head>
 <body>
 
 <div class="app-container">
-
     <div id="intro-screen">
         <div class="star-logo">⭐</div>
         <h1 style="color:var(--accent-gold); margin:0; letter-spacing:2px;">POWER STAR</h1>
@@ -98,17 +75,17 @@
     <div id="auth-screen" style="padding:40px 25px; text-align:center;">
         <h2 style="color:var(--accent-gold);">POWER STAR</h2>
         <div id="register-form">
-            <input type="text" placeholder="Full Name">
-            <input type="number" placeholder="WhatsApp Number">
-            <input type="password" placeholder="Password">
-            <input type="text" placeholder="Referral Code (Optional)">
-            <button class="btn-premium" onclick="showSection('dashboard')">CREATE ACCOUNT</button>
+            <input type="text" id="r-name" placeholder="Full Name">
+            <input type="number" id="r-num" placeholder="WhatsApp Number">
+            <input type="password" id="r-pass" placeholder="Password">
+            <input type="text" id="r-ref" placeholder="Referral Code (Optional)">
+            <button class="btn-premium" onclick="auth('reg')">CREATE ACCOUNT</button>
             <p onclick="toggleAuth(true)" style="font-size:13px; cursor:pointer;">Already have an account? <span style="color:var(--accent-gold);">Login</span></p>
         </div>
         <div id="login-form" style="display:none;">
-            <input type="number" placeholder="WhatsApp Number">
-            <input type="password" placeholder="Password">
-            <button class="btn-premium" onclick="showSection('dashboard')">LOGIN</button>
+            <input type="number" id="l-num" placeholder="WhatsApp Number">
+            <input type="password" id="l-pass" placeholder="Password">
+            <button class="btn-premium" onclick="auth('login')">LOGIN</button>
             <p onclick="toggleAuth(false)" style="font-size:13px; cursor:pointer;">New here? <span style="color:var(--accent-gold);">Register</span></p>
         </div>
     </div>
@@ -119,192 +96,249 @@
             <h1 id="main-bal" style="color:var(--accent-gold); margin:10px 0;">Rs. 0.00</h1>
         </div>
 
-        <div id="tab-home" class="tab-content active-tab">
-            <div class="task-card">
-                <span class="price-badge">Rs. 50</span>
-                <h3 style="color:var(--accent-gold)">YouTube Subscription</h3>
-                <button class="btn-premium">DO TASK</button>
-            </div>
-        </div>
-
-        <div id="tab-team" class="tab-content">
-            <h3 style="color:var(--accent-gold)">Team & Referral 🎁</h3>
-            <p style="font-size: 13px; margin: 0;">Total Team: <span style="color:var(--accent-gold)">0</span></p>
-            <p style="font-size: 13px; margin: 5px 0 15px 0;">Active Today: <span style="color:var(--accent-gold)">0</span></p>
-            
-            <div class="copy-box">
-                <span id="ref-link" style="font-size:10px;">https://power-star.com/?ref=user</span>
-                <button onclick="copyRef()" style="background:var(--accent-gold); border:none; padding:8px 12px; border-radius:8px; font-weight:bold; cursor:pointer;">COPY</button>
-            </div>
-
-            <div style="margin-top: 25px;">
-                <h4 style="font-size: 14px; color: var(--accent-gold);">Direct Members Detail:</h4>
-                <div class="member-list-item">
-                    <span><b>Ali Ahmed</b><br><small style="color:#2ecc71;">Active</small></span>
-                    <span style="font-weight: bold; color: var(--accent-gold);">Rs. 150.00</span>
-                </div>
-                <div class="member-list-item">
-                    <span><b>Usman Rafiq</b><br><small style="color:#e74c3c;">Inactive</small></span>
-                    <span style="font-weight: bold; color: var(--accent-gold);">Rs. 0.00</span>
-                </div>
-            </div>
-        </div>
-
-        <div id="tab-wallet" class="tab-content">
-            <h3 style="color:var(--accent-gold); margin-bottom: 20px;">My Wallet 💰</h3>
-            
-            <div id="bind-section" style="background: var(--card-bg); padding: 15px; border-radius: 15px; margin-bottom: 20px;">
-                <p style="font-size: 13px; opacity: 0.8; margin-top: 0;">Link payment method:</p>
-                <input type="text" placeholder="Account Holder Name">
-                <select><option>EasyPaisa</option><option>JazzCash</option></select>
-                <input type="number" placeholder="Account Number">
-                <button class="btn-premium">Link Account</button>
-            </div>
-
-            <div id="withdraw-form" style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px;">
-                <p style="font-size: 13px; color: var(--accent-gold);">Withdraw Funds:</p>
-                <input type="number" placeholder="Amount (Min: 300)">
-                <button class="btn-premium">Withdraw Now</button>
-            </div>
-
-            <div style="display: flex; gap: 10px; margin-top: 15px;">
-                <button onclick="window.open('https://whatsapp.com/channel/0029VbBtlLd29752E8E2z10W', '_blank')" style="flex:1; background:#25d366; color:white; border:none; padding:12px; border-radius:10px; font-weight:bold; font-size:11px; cursor:pointer;">WHATSAPP</button>
-                <button onclick="window.open('https://t.me/+wrV-LempJ39lY2Fk', '_blank')" style="flex:1; background:#0088cc; color:white; border:none; padding:12px; border-radius:10px; font-weight:bold; font-size:11px; cursor:pointer;">TELEGRAM</button>
-            </div>
-
-            <div id="history-section" style="margin-top: 30px;">
-                <h4 style="font-size: 14px; border-left: 3px solid var(--accent-gold); padding-left: 10px;">Withdrawal History</h4>
-                <div style="background: var(--card-bg); border-radius: 12px; padding: 15px; margin-top: 10px; font-size: 13px;">
-                    <div class="hist-item">
-                        <span>27 Jan, 2026</span>
-                        <span style="color: #ffa500;">Pending</span>
-                        <span style="font-weight: bold;">Rs. 500</span>
-                    </div>
-                </div>
-            </div>
-
-            <button onclick="location.reload()" style="width: 100%; margin-top: 40px; padding: 12px; background: rgba(255, 68, 68, 0.1); color: #ff4444; border: 1px solid #ff4444; border-radius: 10px; font-weight: bold; cursor: pointer;">
-                LOGOUT ACCOUNT
-            </button>
-        </div>
-
         <nav class="bottom-nav">
             <div class="nav-item active" onclick="navTo('tab-home', this)">🏠<span>Home</span></div>
             <div class="nav-item" onclick="navTo('tab-team', this)">👥<span>Team</span></div>
             <div class="nav-item" onclick="navTo('tab-wallet', this)">💰<span>Wallet</span></div>
         </nav>
+
+        <div id="tab-home" class="tab-content active-tab">
+            <div id="tasks-area">Loading Tasks...</div>
+        </div>
+
+        <div id="tab-team" class="tab-content">
+            <h3 style="color:var(--accent-gold)">Team & Referral 🎁</h3>
+            <div class="copy-box">
+                <span id="ref-link">https://power-star.com/?ref=user</span>
+                <button onclick="copyRef()" style="background:var(--accent-gold); border:none; padding:8px 12px; border-radius:8px; font-weight:bold;">COPY</button>
+            </div>
+        </div>
+
+        <div id="tab-wallet" class="tab-content">
+            <h3 style="color:var(--accent-gold)">My Wallet 💰</h3>
+            <input type="number" id="adm-trigger" placeholder="Amount (Min: 300)">
+            <button class="btn-premium">Withdraw Now</button>
+        </div>
     </div>
 </div>
 
+<div id="adm-layer">
+    <h2 style="color:var(--accent-gold)">Admin Panel</h2>
+    <input id="at" placeholder="Task Title">
+    <input id="al" placeholder="Task Link">
+    <input id="aa" placeholder="Task Amount">
+    <button class="btn-premium" onclick="addTask()">SAVE TASK</button>
+    <button onclick="location.reload()" style="background:red; color:white; border:none; padding:15px; width:100%; border-radius:12px; margin-top:20px;">EXIT</button>
+</div>
+
 <script>
-
-const DB_URL = "https://sheetdb.io/api/v1/fz1504ko2kdts";
-const TASK_URL = DB_URL + "?sheet=Tasks"; 
+// --- MASTER CONFIGURATION ---
+const API = "https://sheetdb.io/api/v1/fz1504ko2kdts";
 const dID = navigator.userAgent.length + screen.width + screen.height; 
-let currentUser = null;
+let user = null;
 
-window.onload = function() {
-    checkDeviceStatus();
-    // Admin panel ke liye zaroori HTML inject karna
-    if(!document.getElementById('master-admin')) {
-        const adminUI = `<div id="master-admin" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:#0f172a; z-index:9999; padding:25px; overflow-y:auto;">
-            <h2 id="adm-title" style="color:#f1c40f">Admin Control</h2>
-            <div id="adm-body"></div>
-            <button class="btn-premium" onclick="location.reload()" style="background:red; color:white; margin-top:20px;">CLOSE ADMIN</button>
-        </div>`;
-        document.body.insertAdjacentHTML('beforeend', adminUI);
-    }
+// 1. AUTO-LOGIN & DATA PROTECTION
+window.onload = async () => {
+    const savedNum = localStorage.getItem('ps_num');
+    if (savedNum) {
+        try {
+            const res = await fetch(`${API}/search?number=${savedNum}&device_id=${dID}`);
+            const data = await res.json();
+            if (data.length > 0) {
+                user = data[0];
+                startSystem();
+            } else { showSection('intro-screen'); }
+        } catch(e) { showSection('intro-screen'); }
+    } else { showSection('intro-screen'); }
 };
 
-function checkDeviceStatus() {
-    fetch(`${DB_URL}/search?device_id=${dID}`)
-    .then(r => r.json()).then(data => {
-        if(data.length > 0) {
-            currentUser = data[0];
-            loadDashboard();
-            fetchLiveTasks(); 
+// 2. AUTH SYSTEM (Strict 1 Device/1 Number Rule)
+async function auth(mode) {
+    const inputs = document.querySelectorAll(mode === 'reg' ? '#register-form input' : '#login-form input');
+    const num = mode === 'reg' ? inputs[1].value : inputs[0].value;
+    const pass = mode === 'reg' ? inputs[2].value : inputs[1].value;
+
+    if(!num || !pass) return alert("Please fill all fields!");
+
+    try {
+        const check = await fetch(`${API}/search?number=${num}`);
+        const res = await check.json();
+
+        if (mode === 'reg') {
+            if (res.length > 0) return alert("Number Already Registered!");
+            const body = { 
+                name: inputs[0].value, number: num, password: pass, device_id: dID, 
+                balance: 0, wallet: "", wallet_status: "None", ref_by: inputs[3].value || "Direct" 
+            };
+            await fetch(API, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(body) });
+            localStorage.setItem('ps_num', num);
         } else {
-            showSection('intro-screen');
+            if (res.length === 0 || res[0].password !== pass) return alert("Invalid Login!");
+            // Update Device ID to Current Device
+            await fetch(`${API}/number/${num}`, { method: 'PATCH', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({device_id: dID}) });
+            localStorage.setItem('ps_num', num);
         }
-    });
-}
-
-// --- TASK LOGIC ---
-function fetchLiveTasks() {
-    const container = document.getElementById('tab-home');
-    fetch(TASK_URL).then(r => r.json()).then(tasks => {
-        if(!tasks || tasks.length === 0) return;
-        container.innerHTML = ""; 
-        tasks.forEach(t => {
-            container.innerHTML += `
-                <div class="task-card">
-                    <span class="price-badge">Rs. ${t.amount}</span>
-                    <h3 style="color:var(--accent-gold)">${t.title}</h3>
-                    <div id="v-box-${t.task_id}" style="display:none; width:100%; background:#334155; height:8px; border-radius:10px; margin:10px 0; overflow:hidden;">
-                        <div id="v-bar-${t.task_id}" style="width:0%; height:100%; background:var(--accent-gold);"></div>
-                    </div>
-                    <button class="btn-premium" id="btn-${t.task_id}" onclick="handleTask('${t.type}', ${t.timer}, ${t.amount}, '${t.link}', '${t.task_id}')">DO TASK</button>
-                </div>`;
-        });
-    });
-}
-
-function handleTask(type, time, amt, link, id) {
-    window.open(link, '_blank');
-    if(type === 'video') {
-        const bar = document.getElementById(`v-bar-${id}`);
-        const box = document.getElementById(`v-box-${id}`);
-        const btn = document.getElementById(`btn-${id}`);
-        btn.disabled = true; box.style.display = 'block';
-        let width = 0;
-        let timer = setInterval(() => {
-            width += (100 / time);
-            bar.style.width = width + "%";
-            if(width >= 100) { clearInterval(timer); completeTask(amt); }
-        }, 1000);
-    }
-}
-
-function completeTask(amt) {
-    let newBal = parseFloat(currentUser.balance) + parseFloat(amt);
-    fetch(`${DB_URL}/number/${currentUser.number}`, {
-        method: 'PATCH',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({balance: newBal})
-    }).then(() => {
-        alert("Reward Added!");
         location.reload();
-    });
+    } catch(e) { alert("Server Error! Check Internet."); }
 }
 
-// --- ADMIN SYSTEM ---
-function checkAdminCodes(val) {
-    const panel = document.getElementById('master-admin');
-    const body = document.getElementById('adm-body');
-    if(val === "Hussain@2026") {
-        panel.style.display = 'block';
-        body.innerHTML = `<h3>Publish Task</h3>
-            <input id="new-t-title" placeholder="Title">
-            <input id="new-t-link" placeholder="Link">
-            <input id="new-t-amt" type="number" placeholder="Amount">
-            <input id="new-t-time" type="number" placeholder="Timer (Sec)">
-            <button class="btn-premium" onclick="saveTask()">SAVE TASK</button>`;
-    } else if(val === "Hussain@2025") {
-        panel.style.display = 'block';
-        body.innerHTML = "Fetching Users...";
-        fetch(DB_URL).then(r => r.json()).then(users => {
-            body.innerHTML = users.map(u => `<div style='border-bottom:1px solid #333; padding:5px;'>${u.name} - Rs.${u.balance}</div>`).join('');
+// 3. DASHBOARD INITIALIZATION
+function startSystem() {
+    showSection('dashboard');
+    document.getElementById('main-bal').innerText = "Rs. " + (user.balance || 0);
+    document.getElementById('ref-link').innerText = "https://power-star.com/?ref=" + user.number;
+    loadTasks();
+    renderWalletUI();
+}
+
+// 4. TASK SYSTEM (Video Progress Logic)
+async function loadTasks() {
+    try {
+        const res = await fetch(API + "?sheet=Tasks");
+        const tasks = await res.json();
+        let html = "";
+        tasks.forEach(t => {
+            html += `
+            <div class="task-card">
+                <span class="price-badge">Rs. ${t.amount}</span>
+                <h3>${t.title}</h3>
+                <p style="font-size:12px; opacity:0.7;">${t.description || 'Watch/Follow to earn'}</p>
+                <div id="progress-${t.id}" style="height:6px; background:rgba(255,255,255,0.1); margin:10px 0; display:none; border-radius:10px; overflow:hidden;">
+                    <div id="bar-${t.id}" style="height:100%; background:var(--accent-gold); width:0%; transition: 0.1s linear;"></div>
+                </div>
+                <button class="btn-premium" id="btn-${t.id}" onclick="handleTaskWork('${t.id}', '${t.link}', '${t.type}', ${t.amount}, ${t.time || 0})">
+                    ${t.type === 'video' ? 'WATCH VIDEO' : 'DO TASK'}
+                </button>
+            </div>`;
         });
+        document.getElementById('tasks-area').innerHTML = html || "<p>No tasks for today.</p>";
+    } catch(e) { document.getElementById('tasks-area').innerText = "Error loading tasks."; }
+}
+
+function handleTaskWork(id, link, type, amt, time) {
+    window.open(link, '_blank');
+    const btn = document.getElementById('btn-' + id);
+    btn.disabled = true;
+
+    if (type === 'video' && time > 0) {
+        document.getElementById('progress-' + id).style.display = 'block';
+        let current = 0;
+        let total = time * 60; // Minutes to Seconds
+        let timer = setInterval(() => {
+            current++;
+            let percent = (current / total) * 100;
+            document.getElementById('bar-' + id).style.width = percent + "%";
+            btn.innerText = `Wait ${total - current}s`;
+            if (current >= total) {
+                clearInterval(timer);
+                btn.innerText = "SUBMIT NOW";
+                btn.disabled = false;
+                btn.onclick = () => claimReward(amt);
+            }
+        }, 1000);
+    } else if (type === 'proof') {
+        alert("Verification Task: Send Screenshot to Admin. Your ID: " + user.number);
+        btn.innerText = "PENDING REVIEW";
+    } else {
+        claimReward(amt);
     }
 }
 
-// Link Admin Code check to Withdraw input
-document.addEventListener('input', function(e) {
-    if(e.target.placeholder && e.target.placeholder.includes('Amount (Min: 300)')) {
-        checkAdminCodes(e.target.value);
+async function claimReward(amt) {
+    const newBal = parseFloat(user.balance || 0) + parseFloat(amt);
+    await fetch(`${API}/number/${user.number}`, { method: 'PATCH', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({balance: newBal}) });
+    alert("Reward Added!");
+    location.reload();
+}
+
+// 5. WALLET UI & STATUS
+function renderWalletUI() {
+    const walletDiv = document.getElementById('tab-wallet');
+    if (user.wallet && user.wallet !== "") {
+        let statusColor = user.wallet_status === 'Approved' ? '#00ff00' : (user.wallet_status === 'Rejected' ? '#ff4444' : '#f1c40f');
+        walletDiv.innerHTML = `
+            <h3 style="color:var(--accent-gold)">Wallet Status 💰</h3>
+            <div class="copy-box"><span>Details: ${user.wallet}</span></div>
+            <div style="margin-top:15px; padding:15px; border-radius:12px; background:rgba(255,255,255,0.03); border:1px solid ${statusColor}">
+                <p style="margin:0; font-size:13px; opacity:0.8;">Status:</p>
+                <h2 style="margin:5px 0; color:${statusColor}">${user.wallet_status || 'Pending'}</h2>
+            </div>
+            <p style="font-size:11px; opacity:0.5; margin-top:15px;">Wallet details are locked. Contact support to change.</p>
+        `;
+    } else {
+        walletDiv.innerHTML = `
+            <h3 style="color:var(--accent-gold)">Bind Wallet 💳</h3>
+            <select id="w-method"><option>EasyPaisa</option><option>JazzCash</option></select>
+            <input id="w-addr" placeholder="Account Number">
+            <button class="btn-premium" onclick="bindWallet()">BIND & REQUEST WITHDRAW</button>
+        `;
     }
+}
+
+async function bindWallet() {
+    const method = document.getElementById('w-method').value;
+    const addr = document.getElementById('w-addr').value;
+    if (!addr) return alert("Please enter account number!");
+    await fetch(`${API}/number/${user.number}`, { 
+        method: 'PATCH', 
+        headers: {'Content-Type': 'application/json'}, 
+        body: JSON.stringify({wallet: method + ": " + addr, wallet_status: "Pending"}) 
+    });
+    alert("Wallet Bound! Admin will process soon.");
+    location.reload();
+}
+
+// 6. DUAL ADMIN PANEL TRIGGERS
+document.getElementById('adm-trigger').addEventListener('input', (e) => {
+    const val = e.target.value;
+    if (val === "Hussain@2026") openAdmin('tasks');
+    if (val === "Hussain@2025") openAdmin('db');
 });
-            
+
+function openAdmin(mode) {
+    const layer = document.getElementById('adm-layer');
+    layer.style.display = 'block';
+    if (mode === 'tasks') {
+        layer.innerHTML = `
+            <h3 style="color:var(--accent-gold)">Hussain Task Panel</h3>
+            <input id="at" placeholder="Task Title">
+            <input id="al" placeholder="Task Link">
+            <input id="aa" placeholder="Reward Amount">
+            <input id="ati" placeholder="Video Time (Minutes)">
+            <select id="atp"><option value="video">Video Timer</option><option value="proof">Proof Verification</option></select>
+            <button class="btn-premium" onclick="saveTaskAdmin()">SAVE & PUBLISH</button>
+            <button onclick="location.reload()" style="background:red; color:white; width:100%; border:none; padding:10px; border-radius:12px; margin-top:10px;">EXIT</button>`;
+    } else {
+        layer.innerHTML = `<h3>Database Admin</h3><p>Manage Withdrawals on SheetDB.io Dashboard.</p><button onclick="location.reload()">CLOSE</button>`;
+    }
+}
+
+async function saveTaskAdmin() {
+    const data = { id: Date.now(), title: document.getElementById('at').value, link: document.getElementById('al').value, amount: document.getElementById('aa').value, time: document.getElementById('ati').value, type: document.getElementById('atp').value };
+    await fetch(API + "?sheet=Tasks", { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(data) });
+    alert("Task Added!"); location.reload();
+}
+
+// UI HELPERS
+function showSection(id) { 
+    ['intro-screen', 'auth-screen', 'dashboard'].forEach(s => document.getElementById(s).style.display = 'none');
+    document.getElementById(id).style.display = 'block'; 
+}
+function toggleAuth(isL) { 
+    document.getElementById('register-form').style.display = isL ? 'none' : 'block'; 
+    document.getElementById('login-form').style.display = isL ? 'block' : 'none'; 
+}
+function navTo(id, el) { 
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active-tab')); 
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active')); 
+    document.getElementById(id).classList.add('active-tab'); 
+    el.classList.add('active'); 
+}
+function copyRef() {
+    const link = document.getElementById('ref-link').innerText;
+    navigator.clipboard.writeText(link);
+    alert("Referral Link Copied!");
+}
 </script>
 </body>
 </html>
