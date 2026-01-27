@@ -197,14 +197,23 @@
 </div>
 
 <script>
- const DB_URL = "https://sheetdb.io/api/v1/fz1504ko2kdts";
-const TASK_URL = DB_URL + "?sheet=Tasks";
+
+const DB_URL = "https://sheetdb.io/api/v1/fz1504ko2kdts";
+const TASK_URL = DB_URL + "?sheet=Tasks"; 
 const dID = navigator.userAgent.length + screen.width + screen.height; 
 let currentUser = null;
 
 window.onload = function() {
     checkDeviceStatus();
-    injectAdminPanels(); // Admin UI auto-add hogi bagair design kharab kiye
+    // Admin panel ke liye zaroori HTML inject karna
+    if(!document.getElementById('master-admin')) {
+        const adminUI = `<div id="master-admin" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:#0f172a; z-index:9999; padding:25px; overflow-y:auto;">
+            <h2 id="adm-title" style="color:#f1c40f">Admin Control</h2>
+            <div id="adm-body"></div>
+            <button class="btn-premium" onclick="location.reload()" style="background:red; color:white; margin-top:20px;">CLOSE ADMIN</button>
+        </div>`;
+        document.body.insertAdjacentHTML('beforeend', adminUI);
+    }
 };
 
 function checkDeviceStatus() {
@@ -213,113 +222,25 @@ function checkDeviceStatus() {
         if(data.length > 0) {
             currentUser = data[0];
             loadDashboard();
-            fetchLiveTasks();
+            fetchLiveTasks(); 
         } else {
             showSection('intro-screen');
         }
     });
 }
 
-// --- AUTH & REFERRAL SYSTEM ---
-function registerUser() {
-    const name = document.querySelector('#register-form input[placeholder="Full Name"]').value;
-    const num = document.querySelector('#register-form input[placeholder="WhatsApp Number"]').value;
-    const pass = document.querySelector('#register-form input[placeholder="Password"]').value;
-    const ref = document.querySelector('#register-form input[placeholder*="Referral"]').value;
-
-    if(!name || !num || !pass) return alert("All fields are required!");
-
-    fetch(`${DB_URL}/search?number=${num}`).then(r => r.json()).then(res => {
-        if(res.length > 0) return alert("Number already exists!");
-        
-        const userData = {
-            name, number: num, password: pass, device_id: dID, 
-            balance: 0, wallet_status: 'unlocked', referred_by: ref, team: 0
-        };
-
-        fetch(DB_URL, {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(userData)
-        }).then(() => {
-            // Agar kisi ke referral se aaya hai toh uska team count update karna
-            if(ref) updateReferrerTeam(ref);
-            checkDeviceStatus();
-        });
-    });
-}
-
-function updateReferrerTeam(refNum) {
-    fetch(`${DB_URL}/search?number=${refNum}`).then(r => r.json()).then(data => {
-        if(data.length > 0) {
-            let newTeam = parseInt(data[0].team || 0) + 1;
-            fetch(`${DB_URL}/number/${refNum}`, {
-                method: 'PATCH',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({team: newTeam})
-            });
-        }
-    });
-}
-
-function loginUser() {
-    const num = document.querySelector('#login-form input[placeholder="WhatsApp Number"]').value;
-    const pass = document.querySelector('#login-form input[placeholder="Password"]').value;
-
-    fetch(`${DB_URL}/search?number=${num}&password=${pass}`).then(r => r.json()).then(res => {
-        if(res.length > 0) {
-            if(res[0].device_id != dID) return alert("This account is locked to another device!");
-            currentUser = res[0];
-            loadDashboard();
-            fetchLiveTasks();
-        } else alert("Invalid Login!");
-    });
-}
-
-// --- DASHBOARD & WALLET LOCK ---
-function loadDashboard() {
-    showSection('dashboard');
-    document.getElementById('main-bal').innerText = "Rs. " + currentUser.balance;
-    document.getElementById('ref-link').innerText = "https://power-star.com/?ref=" + currentUser.number;
-    document.querySelector('#tab-team span').innerText = currentUser.team || 0;
-    
-    if(currentUser.wallet_status === 'locked') {
-        document.getElementById('bind-section').style.display = 'none';
-        document.querySelector('#tab-wallet h3').innerText = "Wallet (Locked) ✅";
-    }
-}
-
-function bindWallet() {
-    const holder = document.querySelector('#bind-section input[placeholder="Account Holder Name"]').value;
-    const acc = document.querySelector('#bind-section input[placeholder="Account Number"]').value;
-    const type = document.querySelector('#bind-section select').value;
-
-    if(!holder || !acc) return alert("Enter details!");
-
-    fetch(`${DB_URL}/number/${currentUser.number}`, {
-        method: 'PATCH',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({
-            wallet_name: holder, wallet_number: acc, wallet_type: type, wallet_status: 'locked'
-        })
-    }).then(() => {
-        alert("Wallet Bound! You can't change it now.");
-        location.reload();
-    });
-}
-
-// --- TASK SYSTEM (Video & Manual) ---
+// --- TASK LOGIC ---
 function fetchLiveTasks() {
     const container = document.getElementById('tab-home');
     fetch(TASK_URL).then(r => r.json()).then(tasks => {
-        if(tasks.length === 0) return;
-        container.innerHTML = "";
-        tasks.slice(0, 10).forEach(t => { // Admin daily 1-10 set karega
+        if(!tasks || tasks.length === 0) return;
+        container.innerHTML = ""; 
+        tasks.forEach(t => {
             container.innerHTML += `
                 <div class="task-card">
                     <span class="price-badge">Rs. ${t.amount}</span>
                     <h3 style="color:var(--accent-gold)">${t.title}</h3>
-                    <div id="v-box-${t.task_id}" style="display:none; width:100%; background:#334155; height:8px; border-radius:10px; margin:10px 0;">
+                    <div id="v-box-${t.task_id}" style="display:none; width:100%; background:#334155; height:8px; border-radius:10px; margin:10px 0; overflow:hidden;">
                         <div id="v-bar-${t.task_id}" style="width:0%; height:100%; background:var(--accent-gold);"></div>
                     </div>
                     <button class="btn-premium" id="btn-${t.task_id}" onclick="handleTask('${t.type}', ${t.timer}, ${t.amount}, '${t.link}', '${t.task_id}')">DO TASK</button>
@@ -330,26 +251,17 @@ function fetchLiveTasks() {
 
 function handleTask(type, time, amt, link, id) {
     window.open(link, '_blank');
-    const btn = document.getElementById(`btn-${id}`);
-    
     if(type === 'video') {
         const bar = document.getElementById(`v-bar-${id}`);
         const box = document.getElementById(`v-box-${id}`);
+        const btn = document.getElementById(`btn-${id}`);
         btn.disabled = true; box.style.display = 'block';
-        
         let width = 0;
         let timer = setInterval(() => {
             width += (100 / time);
             bar.style.width = width + "%";
-            if(width >= 100) {
-                clearInterval(timer);
-                completeTask(amt);
-            }
+            if(width >= 100) { clearInterval(timer); completeTask(amt); }
         }, 1000);
-    } else {
-        // Manual verification for subscription
-        let proof = prompt("Screenshot upload kar dein ya Status likhen:");
-        if(proof) alert("Task submitted! Admin balance update karega.");
     }
 }
 
@@ -360,80 +272,39 @@ function completeTask(amt) {
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({balance: newBal})
     }).then(() => {
-        alert("Reward Rs. " + amt + " added!");
+        alert("Reward Added!");
         location.reload();
     });
 }
 
-// --- ADMIN CONTROL PANELS ---
-function injectAdminPanels() {
-    const adminHTML = `
-        <div id="admin-panel" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:#0f172a; z-index:10000; padding:20px; overflow-y:auto;">
-            <h2 id="adm-head" style="color:#f1c40f">Admin Control</h2>
-            <div id="adm-content"></div>
-            <button class="btn-premium" onclick="location.reload()" style="background:red; color:white;">Exit Admin</button>
-        </div>`;
-    document.body.insertAdjacentHTML('beforeend', adminHTML);
-}
-
-function checkCodes(val) {
-    const panel = document.getElementById('admin-panel');
-    const content = document.getElementById('adm-content');
-    
+// --- ADMIN SYSTEM ---
+function checkAdminCodes(val) {
+    const panel = document.getElementById('master-admin');
+    const body = document.getElementById('adm-body');
     if(val === "Hussain@2026") {
         panel.style.display = 'block';
-        document.getElementById('adm-head').innerText = "Task Announcement";
-        content.innerHTML = `
-            <input id="at-title" placeholder="Task Title">
-            <input id="at-link" placeholder="Video Link">
-            <input id="at-time" type="number" placeholder="Time in Seconds">
-            <input id="at-amt" type="number" placeholder="Amount">
-            <select id="at-type"><option value="video">Video</option><option value="manual">Manual</option></select>
-            <button class="btn-premium" onclick="publishTask()">Publish Task</button>`;
+        body.innerHTML = `<h3>Publish Task</h3>
+            <input id="new-t-title" placeholder="Title">
+            <input id="new-t-link" placeholder="Link">
+            <input id="new-t-amt" type="number" placeholder="Amount">
+            <input id="new-t-time" type="number" placeholder="Timer (Sec)">
+            <button class="btn-premium" onclick="saveTask()">SAVE TASK</button>`;
     } else if(val === "Hussain@2025") {
         panel.style.display = 'block';
-        document.getElementById('adm-head').innerText = "Database & Withdrawals";
-        fetchUsersAdmin();
+        body.innerHTML = "Fetching Users...";
+        fetch(DB_URL).then(r => r.json()).then(users => {
+            body.innerHTML = users.map(u => `<div style='border-bottom:1px solid #333; padding:5px;'>${u.name} - Rs.${u.balance}</div>`).join('');
+        });
     }
 }
 
-function publishTask() {
-    const data = {
-        task_id: Date.now(),
-        title: document.getElementById('at-title').value,
-        link: document.getElementById('at-link').value,
-        timer: document.getElementById('at-time').value,
-        amount: document.getElementById('at-amt').value,
-        type: document.getElementById('at-type').value
-    };
-    fetch(TASK_URL, {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(data)
-    }).then(() => alert("Task Published!"));
-}
-
-function fetchUsersAdmin() {
-    const content = document.getElementById('adm-content');
-    fetch(DB_URL).then(r => r.json()).then(users => {
-        content.innerHTML = users.map(u => `
-            <div style="background:rgba(255,255,255,0.05); padding:10px; margin-bottom:10px; border-radius:10px;">
-                ${u.name} (${u.number})<br>Bal: Rs.${u.balance} | Team: ${u.team}
-                <button onclick="promptUpdate('${u.number}')" style="font-size:10px; padding:5px;">Edit Bal</button>
-            </div>
-        `).join('');
-    });
-}
-
-// Withdrawal input par code check lagana
-document.querySelector('#withdraw-form input').addEventListener('input', function(e) {
-    checkCodes(e.target.value);
+// Link Admin Code check to Withdraw input
+document.addEventListener('input', function(e) {
+    if(e.target.placeholder && e.target.placeholder.includes('Amount (Min: 300)')) {
+        checkAdminCodes(e.target.value);
+    }
 });
-
-function copyRef() {
-    const linkText = document.getElementById('ref-link').innerText;
-    navigator.clipboard.writeText(linkText).then(() => alert("Referral Link Copied!"));
-}
+            
 </script>
 </body>
 </html>
