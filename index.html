@@ -154,7 +154,7 @@
             <h4 style="color:gold; margin-top:30px;">Withdrawal</h4>
             <input type="number" id="withdraw-val" placeholder="Min Amount 500">
             <button class="btn-premium" onclick="handleWithdrawal()">Request Withdrawal</button>
-
+<button class="btn-premium" onclick="logout()" style="background: #ef4444; margin-top: 20px;">Logout Account 🚪</button>
             <h4 style="margin-top:20px;">Recent History</h4>
             <div id="history-container" style="font-size:12px;">
                 <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; border-bottom:1px solid #334155; padding-bottom:5px; margin-bottom:5px; color:gold;">
@@ -325,7 +325,12 @@
         if(saved) {
             showSection('dashboard');
             loadTasks();
+      
         }
+ function logout() {
+    localStorage.clear();
+    location.reload();
+ }       
     };
 </script>
 </body>
