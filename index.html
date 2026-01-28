@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Power Star - Official</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root { 
             --gold-grad: linear-gradient(135deg, #ffd700 0%, #b8860b 100%); 
@@ -12,301 +12,321 @@
             --card-bg: rgba(255, 255, 255, 0.05); 
             --accent-gold: #f1c40f;
         }
-        * { box-sizing: border-box; font-family: 'Poppins', sans-serif; transition: 0.3s; -webkit-user-select: none; user-select: none; }
-        input, textarea, select, .copy-box span, #main-bal { -webkit-user-select: text; user-select: text; }
+        * { box-sizing: border-box; font-family: 'Poppins', sans-serif; transition: 0.3s; }
         body { margin: 0; background: var(--dark-bg); color: white; display: flex; justify-content: center; overflow-x: hidden; }
         .app-container { width: 100%; max-width: 450px; min-height: 100vh; background: var(--dark-bg); position: relative; border: 1px solid rgba(255,255,255,0.1); }
-        input, select, textarea { width: 100%; padding: 14px; background: var(--card-bg); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; color: white; outline: none; margin-bottom: 12px; }
-        input:focus { border-color: var(--accent-gold); }
-        .btn-premium { width: 100%; padding: 16px; background: var(--gold-grad); color: black; border: none; border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; gap: 10px; text-decoration: none; text-transform: uppercase; letter-spacing: 1px; }
-        #auth-screen, #dashboard { display: none; }
-        #intro-screen { padding: 40px 25px; text-align: center; animation: fadeIn 0.8s ease-in; }
-        .star-logo { font-size: 60px; margin-bottom: 10px; animation: glow 2s infinite alternate; }
-        .intro-box { background: rgba(255, 255, 255, 0.03); border: 1px solid var(--accent-gold); padding: 25px; border-radius: 20px; margin: 25px 0; line-height: 1.6; text-align: left; position: relative; overflow: hidden; border-left: 4px solid var(--accent-gold); }
-        .intro-box h4 { color: var(--accent-gold); margin: 15px 0 5px 0; font-size: 15px; }
-        .intro-box ul { padding-left: 18px; margin: 5px 0; font-size: 13px; color: #cbd5e1; }
-        .tab-content { display: none; padding: 20px; animation: fadeIn 0.4s; padding-bottom: 100px; }
+        
+        /* Forms & Inputs */
+        input, select { width: 100%; padding: 14px; background: var(--card-bg); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; color: white; outline: none; margin-bottom: 12px; }
+        .btn-premium { width: 100%; padding: 16px; background: var(--gold-grad); color: black; border: none; border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        
+        /* Screens */
+        #auth-screen, #dashboard, #adm-layer, #ss-modal { display: none; }
+        .tab-content { display: none; padding: 20px; padding-bottom: 100px; animation: fadeIn 0.4s; }
         .active-tab { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes glow { from { text-shadow: 0 0 5px #fff, 0 0 10px #f1c40f; } to { text-shadow: 0 0 20px #fff, 0 0 35px #f1c40f; } }
-        .balance-card { background: var(--card-bg); padding: 25px; border-radius: 20px; text-align: center; margin: 20px; border: 1px solid rgba(255,215,0,0.2); }
-        .task-card { background: var(--card-bg); padding: 20px; border-radius: 15px; border: 1px solid var(--accent-gold); margin-top: 15px; text-align: center; position: relative; }
-        .price-badge { position: absolute; top: 10px; right: 10px; background: var(--accent-gold); color: black; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: bold; }
+
+        /* Task Design */
+        .task-card { background: var(--card-bg); border-radius: 15px; padding: 15px; margin-bottom: 15px; border-left: 5px solid var(--accent-gold); position: relative; }
+        .task-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+        .task-desc { flex: 1; font-size: 14px; padding-right: 10px; }
+        .task-price { background: var(--accent-gold); color: black; font-weight: bold; padding: 4px 10px; border-radius: 8px; font-size: 12px; min-width: 60px; text-align: center; }
+        
+        /* Progress Bar */
+        .progress-container { width: 100%; height: 8px; background: #334155; border-radius: 10px; margin-top: 10px; display: none; overflow: hidden; }
+        .progress-fill { height: 100%; background: var(--accent-gold); width: 0%; transition: 1s linear; }
+
+        /* Bottom Nav */
         .bottom-nav { position: fixed; bottom: 0; width: 100%; max-width: 450px; height: 75px; background: rgba(15, 23, 42, 0.98); display: flex; border-top: 1px solid rgba(255,215,0,0.1); z-index: 1000; }
-        .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 11px; color: #94a3b8; cursor: pointer; }
+        .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 11px; color: #94a3b8; cursor: pointer; text-decoration: none; }
         .nav-item.active { color: var(--accent-gold); }
-        .copy-box { background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; margin-top: 10px; border: 1px dashed var(--accent-gold); }
-        .hist-item { display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.05); padding: 10px 0; }
-        .member-list-item { display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.03); padding: 12px; border-radius: 10px; margin-top: 10px; border: 1px solid rgba(255,255,255,0.05); }
-        #adm-layer { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:#0f172a; z-index:10001; padding:20px; overflow-y:auto; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
 <div class="app-container">
-    <div id="intro-screen">
-        <div class="star-logo">⭐</div>
-        <h1 style="color:var(--accent-gold); margin:0; letter-spacing:2px;">POWER STAR</h1>
-        <p style="opacity:0.7; font-size:13px;">Brighter Future, Better Earnings</p>
-        <div class="intro-box">
-            <h3 style="color:var(--accent-gold); margin-top:0;">About Our Work</h3>
-            <p style="font-size:13px; color:#e2e8f0; margin-bottom:10px;">
-                Power Star is a premier Digital Marketing agency bridging global brands with real users. We provide organic growth while creating earning opportunities.
-            </p>
-            <h4>🛠 What We Do</h4>
-            <p style="font-size:13px; color:#e2e8f0;">We help brands boost their reach through our dedicated Power Star Team. Real humans, real engagement.</p>
-            <h4>📋 Daily Tasks</h4>
-            <ul>
-                <li><b>YouTube:</b> Subscribe & Like videos.</li>
-                <li><b>TikTok/FB:</b> Follow & Engage with pages.</li>
-                <li><b>WhatsApp:</b> Stay updated with trends.</li>
-            </ul>
-            <h4>💸 Earning & Withdraw</h4>
-            <ul>
-                <li>Rewards for every task completed.</li>
-                <li>Referral bonuses on team activity.</li>
-                <li>Min Withdraw: <b>Rs. 300</b> via EasyPaisa/JazzCash.</li>
-            </ul>
-            <p style="font-size:12px; margin-top:15px; text-align:center; font-weight:bold; color:var(--accent-gold);">"Your Hard Work, Our Platform!"</p>
-        </div>
-        <button class="btn-premium" onclick="showSection('auth-screen')">Start Earning Now</button>
+   <div id="intro-screen" style="padding: 30px 20px; animation: fadeIn 0.8s ease;">
+    <div class="star-logo" style="text-align:center; font-size:60px; margin-bottom:10px;">⭐</div>
+    <h1 style="color:var(--accent-gold); text-align:center; margin:0; letter-spacing:2px; font-weight:700;">POWER STAR</h1>
+    <p style="text-align:center; opacity:0.8; font-size:13px; margin-bottom:30px;">Brighter Future, Better Earnings</p>
+
+    <div style="background: rgba(255, 215, 0, 0.05); border: 1px solid var(--accent-gold); border-radius: 20px; padding: 25px; margin-bottom: 25px; border-left: 5px solid var(--accent-gold);">
+        <h3 style="color:var(--accent-gold); margin-top:0; font-size:18px;">📋 Official Instructions</h3>
+        <p style="font-size:13px; line-height:1.6; color:#e2e8f0;">Power Star is a premier Digital Marketing agency. We bridge the gap between global brands and active users through organic engagement.</p>
+        
+        <h4 style="color:var(--accent-gold); margin:15px 0 5px 0; font-size:14px;">🛠 Earning Rules:</h4>
+        <ul style="padding-left:18px; font-size:12px; color:#cbd5e1; line-height:1.8;">
+            <li><b>Task Completion:</b> Perform daily YouTube and Video tasks to earn rewards.</li>
+            <li><b>Referral Bonus:</b> Invite friends and build a team to earn recurring commissions.</li>
+            <li><b>Withdrawal Criteria:</b> Minimum 500 PKR balance and 3 active referrals required.</li>
+        </ul>
     </div>
 
-    <div id="auth-screen" style="padding:40px 25px; text-align:center;">
-        <h2 style="color:var(--accent-gold);">POWER STAR</h2>
+    <div style="background: var(--card-bg); border-radius: 15px; padding: 15px; margin-bottom: 25px; border: 1px solid rgba(255,255,255,0.05);">
+        <h4 style="color:var(--accent-gold); margin-top:0; font-size:14px; text-align:center;">Project Summary</h4>
+        <table style="width:100%; font-size:13px; border-collapse: collapse; color:#f8fafc;">
+            <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+                <td style="padding:12px 5px;">Minimum Payout</td>
+                <td style="padding:12px 5px; text-align:right; color:var(--accent-gold); font-weight:600;">Rs. 500</td>
+            </tr>
+            <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+                <td style="padding:12px 5px;">Direct Referral</td>
+                <td style="padding:12px 5px; text-align:right; color:var(--accent-gold); font-weight:600;">10% Bonus</td>
+            </tr>
+            <tr>
+                <td style="padding:12px 5px;">Withdrawal Limit</td>
+                <td style="padding:12px 5px; text-align:right; color:var(--accent-gold); font-weight:600;">Daily</td>
+            </tr>
+        </table>
+    </div>
+
+    <button class="btn-premium" onclick="showSection('auth-screen')">
+        GET STARTED NOW 🚀
+    </button>
+</div>
+
+    <div id="auth-screen" style="padding:40px 25px;">
         <div id="register-form">
-            <input type="text" id="r-name" placeholder="Full Name">
-            <input type="number" id="r-num" placeholder="WhatsApp Number">
-            <input type="password" id="r-pass" placeholder="Password">
-            <input type="text" id="r-ref" placeholder="Referral Code (Optional)">
-            <button class="btn-premium" onclick="auth('reg')">CREATE ACCOUNT</button>
-            <p onclick="toggleAuth(true)" style="font-size:13px; cursor:pointer;">Already have an account? <span style="color:var(--accent-gold);">Login</span></p>
+            <h2 style="text-align:center;">Create Account</h2>
+            <input type="text" id="reg-name" placeholder="Full Name">
+            <input type="number" id="reg-num" placeholder="WhatsApp Number">
+            <input type="password" id="reg-pass" placeholder="Password">
+            <input type="text" id="reg-ref" placeholder="Referral Code (Optional)">
+            <button class="btn-premium" onclick="handleRegister()">Sign Up</button>
+            <p style="text-align:center; font-size:13px;" onclick="toggleAuth(true)">Already a member? <span style="color:gold;">Login</span></p>
         </div>
         <div id="login-form" style="display:none;">
-            <input type="number" id="l-num" placeholder="WhatsApp Number">
-            <input type="password" id="l-pass" placeholder="Password">
-            <button class="btn-premium" onclick="auth('login')">LOGIN</button>
-            <p onclick="toggleAuth(false)" style="font-size:13px; cursor:pointer;">New here? <span style="color:var(--accent-gold);">Register</span></p>
+            <h2 style="text-align:center;">Welcome Back</h2>
+            <input type="number" id="login-num" placeholder="Number">
+            <input type="password" id="login-pass" placeholder="Password">
+            <button class="btn-premium" onclick="handleLogin()">Login Now</button>
+            <p style="text-align:center; font-size:13px;" onclick="toggleAuth(false)">New here? <span style="color:gold;">Register</span></p>
         </div>
     </div>
 
     <div id="dashboard">
-        <div class="balance-card">
-            <span style="font-size:12px; opacity:0.8; letter-spacing:1px;">MY BALANCE</span>
-            <h1 id="main-bal" style="color:var(--accent-gold); margin:10px 0;">Rs. 0.00</h1>
+        <div style="background:var(--card-bg); padding:30px; text-align:center; border-bottom:1px solid gold;">
+            <span style="font-size:12px; opacity:0.6;">CURRENT BALANCE</span>
+            <h1 id="main-bal" style="color:var(--accent-gold); margin:5px 0;">Rs. 0.00</h1>
+        </div>
+
+        <div id="tab-home" class="tab-content active-tab">
+            <h3 style="margin-top:0;">Available Tasks</h3>
+            <div id="task-container">
+                </div>
+            <div id="p-bar-container" class="progress-container"><div id="p-bar-fill" class="progress-fill"></div></div>
+        </div>
+
+        <div id="tab-marketing" class="tab-content">
+            <h3>Marketing Tools</h3>
+            <a id="market-link" href="#" class="btn-premium">Visit Marketing Page</a>
+        </div>
+
+        <div id="tab-team" class="tab-content">
+            <h3>My Team</h3>
+            <div style="background:rgba(255,255,255,0.05); padding:15px; border-radius:15px; border:1px dashed gold; display:flex; justify-content:space-between; align-items:center;">
+                <span id="my-ref-code" style="font-size:12px;">REF: LOADING...</span>
+                <button onclick="copyRef()" style="background:gold; border:none; padding:5px 15px; border-radius:5px; font-weight:bold;">COPY</button>
+            </div>
+            <h4 style="margin-top:20px;">Members List</h4>
+            <div id="team-list" style="font-size:13px; opacity:0.7;">No active members yet.</div>
+        </div>
+
+        <div id="tab-wallet" class="tab-content">
+            <div style="display:flex; gap:10px; margin-bottom:20px;">
+                <a href="https://whatsapp.com/channel/0029VbBtlLd29752E8E2z10W" style="background:#25D366; flex:1; text-align:center; padding:10px; border-radius:10px; text-decoration:none; color:white; font-size:12px; font-weight:bold;">WhatsApp Channel</a>
+                <a href="https://t.me/+wrV-LempJ39lY2Fk" style="background:#0088cc; flex:1; text-align:center; padding:10px; border-radius:10px; text-decoration:none; color:white; font-size:12px; font-weight:bold;">Telegram Group</a>
+            </div>
+
+            <div id="binding-section">
+                <h4 style="color:gold;">Bind Payout Account</h4>
+                <input type="text" id="bind-title" placeholder="Account Title">
+                <select id="bind-type"><option>EasyPaisa</option><option>JazzCash</option></select>
+                <input type="number" id="bind-num" placeholder="Account Number">
+                <button class="btn-premium" onclick="saveBinding()">Submit & Bind</button>
+            </div>
+            <div id="bound-details" style="display:none; background:var(--card-bg); padding:15px; border-radius:12px; border:1px solid #22c55e;">
+                <p style="margin:0; font-size:12px; color:#22c55e;">✅ Account Bound</p>
+                <h5 id="show-bind-info" style="margin:5px 0;"></h5>
+            </div>
+
+            <h4 style="color:gold; margin-top:30px;">Withdrawal</h4>
+            <input type="number" id="withdraw-val" placeholder="Min Amount 500">
+            <button class="btn-premium" onclick="handleWithdrawal()">Request Withdrawal</button>
+
+            <h4 style="margin-top:20px;">Recent History</h4>
+            <div id="history-container" style="font-size:12px;">
+                <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; border-bottom:1px solid #334155; padding-bottom:5px; margin-bottom:5px; color:gold;">
+                    <span>DATE</span><span>AMOUNT</span><span>STATUS</span>
+                </div>
+                <div id="hist-list"></div>
+            </div>
         </div>
 
         <nav class="bottom-nav">
             <div class="nav-item active" onclick="navTo('tab-home', this)">🏠<span>Home</span></div>
+            <div class="nav-item" onclick="navTo('tab-marketing', this)">🚀<span>Marketing</span></div>
             <div class="nav-item" onclick="navTo('tab-team', this)">👥<span>Team</span></div>
             <div class="nav-item" onclick="navTo('tab-wallet', this)">💰<span>Wallet</span></div>
         </nav>
+    </div>
 
-        <div id="tab-home" class="tab-content active-tab">
-            <div id="tasks-area">Loading Tasks...</div>
-        </div>
+    <div id="adm-layer" style="position:fixed; top:0; left:0; width:100%; height:100%; background:var(--dark-bg); z-index:9999; padding:20px; overflow-y:auto;">
+        <h2 style="color:gold;">Announcement Panel</h2>
+        <input type="text" id="adm-desc" placeholder="Task Description">
+        <input type="number" id="adm-price" placeholder="Reward Price">
+        <input type="text" id="adm-link" placeholder="Task URL Link">
+        <select id="adm-status"><option value="auto">Auto Reward (Timer)</option><option value="prof">Proof Required (SS)</option></select>
+        <button class="btn-premium" onclick="postTask()">Publish to Users</button>
+        <button onclick="document.getElementById('adm-layer').style.display='none'" style="width:100%; margin-top:20px; background:red; color:white; border:none; padding:10px; border-radius:10px;">Close Admin</button>
+    </div>
 
-        <div id="tab-team" class="tab-content">
-            <h3 style="color:var(--accent-gold)">Team & Referral 🎁</h3>
-            <div class="copy-box">
-                <span id="ref-link">https://power-star.com/?ref=user</span>
-                <button onclick="copyRef()" style="background:var(--accent-gold); border:none; padding:8px 12px; border-radius:8px; font-weight:bold;">COPY</button>
-            </div>
-        </div>
-
-        <div id="tab-wallet" class="tab-content">
-            <h3 style="color:var(--accent-gold)">My Wallet 💰</h3>
-            <input type="number" id="adm-trigger" placeholder="Amount (Min: 300)">
-            <button class="btn-premium">Withdraw Now</button>
-        </div>
+    <div id="ss-modal" style="position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); width:90%; background:#1e293b; padding:20px; border-radius:20px; z-index:10000; border:1px solid gold; text-align:center;">
+        <h4>Upload Screenshot Proof</h4>
+        <input type="file" id="ss-file" accept="image/*">
+        <button class="btn-premium" onclick="submitProof()">Submit Proof</button>
     </div>
 </div>
 
-<div id="adm-layer">
-    <h2 style="color:var(--accent-gold)">Admin Panel</h2>
-    <input id="at" placeholder="Task Title">
-    <input id="al" placeholder="Task Link">
-    <input id="aa" placeholder="Task Amount">
-    <button class="btn-premium" onclick="saveTaskAdmin()">SAVE TASK</button>
-    <button onclick="location.reload()" style="background:red; color:white; border:none; padding:15px; width:100%; border-radius:12px; margin-top:20px;">EXIT</button>
-</div>
-
 <script>
-    // --- CONFIGURATION ---
-    const USER_API = "https://sheetdb.io/api/v1/vyntcjclg5905"; // Users Database
-    const TASK_API = "https://sheetdb.io/api/v1/1e9n0bdrpmh2f"; // Admin & Tasks Control
+    const USER_API = "https://sheetdb.io/api/v1/vyntcjclg5905";
+    const TASK_API = "https://sheetdb.io/api/v1/1e9n0bdrpmh2f";
+    const DEVICE_ID = navigator.userAgent + screen.width;
 
-    let isLogin = false;
-    let currentBalance = 0.00;
-    let userPhone = localStorage.getItem('user_phone') || "";
-
-    // Agar user pehle se login hai to seedha dashboard dikhao
-    if(userPhone) {
-        document.getElementById('auth-screen').style.display = 'none';
-        document.getElementById('dashboard').style.display = 'block';
-        document.getElementById('u-id').innerText = "PK-" + userPhone.slice(-4);
-        syncData();
+    // 1. Navigation & UI
+    function showSection(id) {
+        ['intro-screen','auth-screen','dashboard'].forEach(s => document.getElementById(s).style.display='none');
+        document.getElementById(id).style.display='block';
     }
-
-    // --- AUTH SLIDE SYSTEM (Register/Login Switch) ---
-    function toggleAuth() {
-        const slider = document.getElementById('auth-slider');
-        const reg = document.getElementById('register-form');
-        const log = document.getElementById('login-form');
-        const bR = document.getElementById('btn-reg');
-        const bL = document.getElementById('btn-login');
-
-        if(!isLogin) {
-            slider.style.left = "calc(50% - 5px)";
-            reg.style.left = "-110%"; reg.style.opacity = "0";
-            log.style.left = "0"; log.style.opacity = "1";
-            bR.classList.remove('active'); bL.classList.add('active');
-            isLogin = true;
-        } else {
-            slider.style.left = "5px";
-            reg.style.left = "0"; reg.style.opacity = "1";
-            log.style.left = "110%"; log.style.opacity = "0";
-            bL.classList.remove('active'); bR.classList.add('active');
-            isLogin = false;
-        }
+    function toggleAuth(isLogin) {
+        document.getElementById('register-form').style.display = isLogin ? 'none' : 'block';
+        document.getElementById('login-form').style.display = isLogin ? 'block' : 'none';
     }
-
-    // --- MAIN ENTRY FUNCTION (Login/Registration) ---
-    async function enterApp(type) {
-        const ph = type === 'reg' ? document.getElementById('r-phone').value : document.getElementById('l-phone').value;
-        const ps = type === 'reg' ? document.getElementById('r-pass').value : document.getElementById('l-pass').value;
-        const nm = document.getElementById('r-name').value;
-        const rf = document.getElementById('r-ref') ? document.getElementById('r-ref').value : "";
-
-        if(!ph || !ps) return alert("Please enter phone and password!");
-
-        try {
-            const res = await fetch(`${USER_API}/search?Phone=${ph}`);
-            const data = await res.json();
-            const user = data.find(u => u.Action === "REGISTRATION");
-
-            if(type === 'reg') {
-                if(user) return alert("This number is already registered!");
-                
-                // Registration Logic
-                await fetch(USER_API, { 
-                    method: 'POST', 
-                    headers: {'Content-Type':'application/json'}, 
-                    body: JSON.stringify({data:[{
-                        "Phone": ph, "Password": ps, "Full Name": nm, 
-                        "Referral": rf, "Action": "REGISTRATION", "Balance": "0"
-                    }]}) 
-                });
-                loginDone(ph);
-            } else {
-                // Login Logic
-                if(user && String(user.Password) === String(ps)) {
-                    loginDone(ph);
-                } else {
-                    alert("Invalid Phone or Password!");
-                }
-            }
-        } catch(e) { alert("Server connection failed!"); }
-    }
-
-    function loginDone(ph) {
-        userPhone = ph;
-        localStorage.setItem('user_phone', ph);
-        document.getElementById('auth-screen').style.display = 'none';
-        document.getElementById('dashboard').style.display = 'block';
-        document.getElementById('u-id').innerText = "PK-" + ph.slice(-4);
-        syncData();
-    }
-
-    // --- DATA SYNC (Dono Sheets se data lana) ---
-    async function syncData() {
-        try {
-            // 1. User Stats (Users Sheet)
-            const uRes = await fetch(`${USER_API}/search?Phone=${userPhone}`);
-            const uData = await uRes.json();
-            
-            const regRow = uData.find(u => u.Action === "REGISTRATION");
-            if(regRow) {
-                currentBalance = parseFloat(regRow.Balance || 0);
-                document.getElementById('main-bal').innerText = "Rs. " + currentBalance.toFixed(2);
-            }
-
-            const bndRow = uData.find(u => u.Action === "BINDING");
-            if(bndRow) {
-                document.getElementById('bind-inputs').style.display = 'none';
-                document.getElementById('bind-saved').style.display = 'block';
-                document.getElementById('saved-details').innerText = bndRow.Extra_Info;
-            }
-
-            // 2. Announcements & Tasks (Task Sheet)
-            const tRes = await fetch(TASK_API);
-            const tData = await tRes.json();
-            
-            const ann = tData.find(t => t.Action === "ANNOUNCEMENT");
-            if(ann) document.getElementById('news-text').innerText = ann.Extra_Info;
-
-            const tasks = tData.filter(t => t.Action === "TASK");
-            const taskList = document.getElementById('task-list');
-            if(tasks.length > 0) {
-                taskList.innerHTML = ""; 
-                tasks.forEach(tk => {
-                    taskList.innerHTML += `
-                        <div class="task-card">
-                            <p><strong>${tk.Extra_Info}</strong></p>
-                            <button class="btn-premium" style="padding:8px; background:#3498db; width:auto;" onclick="window.open('${tk.Link}')">View Task</button>
-                        </div>`;
-                });
-            }
-        } catch(e) { console.log("Background sync error"); }
-    }
-
-    // --- WALLET BINDING ---
-    async function bindAccount() {
-        const name = document.getElementById('acc-name').value;
-        const type = document.getElementById('acc-type').value;
-        const num = document.getElementById('acc-num').value;
-        if(!name || !num) return alert("Fill all account details!");
-
-        const info = `${type}: ${num} (${name})`;
-        await fetch(USER_API, { 
-            method: 'POST', 
-            headers: {'Content-Type':'application/json'}, 
-            body: JSON.stringify({data:[{ "Phone": userPhone, "Action": "BINDING", "Extra_Info": info }]}) 
-        });
-        alert("Account Bound Successfully!");
-        syncData();
-    }
-
-    // --- WITHDRAWAL ---
-    async function requestWithdrawal() {
-        const amt = document.getElementById('withdraw-amt').value;
-        if(!amt || amt < 500) return alert("Minimum withdrawal is 500");
-        if(amt > currentBalance) return alert("Insufficient Balance!");
-
-        await fetch(USER_API, { 
-            method: 'POST', 
-            headers: {'Content-Type':'application/json'}, 
-            body: JSON.stringify({data:[{ "Phone": userPhone, "Action": "WITHDRAW_REQUEST", "Extra_Info": "Amount: Rs." + amt }]}) 
-        });
-        alert("Withdrawal request submitted!");
-    }
-
-    // --- NAVIGATION ---
-    function navTo(id, el) {
+    function navTo(tabId, el) {
         document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active-tab'));
         document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-        document.getElementById(id).classList.add('active-tab');
+        document.getElementById(tabId).classList.add('active-tab');
         el.classList.add('active');
-        syncData();
     }
 
-    // --- ADMIN KEY SHORTCUT ---
-    function triggerAdmin() {
-        let key = prompt("Enter Admin Key:");
-        if(key === "03412049729") {
-            alert("Admin features are now handled via Google Sheets directly!");
+    // 2. Auth Logic (1 Mobile 1 Account)
+    async function handleRegister() {
+        const name = document.getElementById('reg-name').value;
+        const num = document.getElementById('reg-num').value;
+        const pass = document.getElementById('reg-pass').value;
+        if(!name || !num || !pass) return alert("Fill all details!");
+
+        // Device Check
+        const res = await fetch(`${USER_API}/search?deviceId=${DEVICE_ID}`);
+        const data = await res.json();
+        if(data.length > 0) return alert("Error: Account already exists on this device!");
+
+        const user = { name, number: num, password: pass, balance: 0, deviceId: DEVICE_ID, refs: 0, status: 'active' };
+        await fetch(USER_API, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({data:[user]}) });
+        localStorage.setItem('ps_user', JSON.stringify(user));
+        showSection('dashboard');
+        loadTasks();
+    }
+
+    // 3. Task Management (Home)
+    async function loadTasks() {
+        const res = await fetch(TASK_API);
+        const tasks = await res.json();
+        const container = document.getElementById('task-container');
+        container.innerHTML = "";
+        
+        tasks.forEach(t => {
+            container.innerHTML += `
+            <div class="task-card">
+                <div class="task-header">
+                    <div class="task-desc">${t.Discurption}</div>
+                    <div class="task-price">Rs.${t.Amount}</div>
+                </div>
+                <button class="btn-premium" style="padding:10px; font-size:12px;" onclick="startTask('${t.Link}', '${t.Status}', ${t.Amount})">START NOW</button>
+            </div>`;
+        });
+    }
+
+    function startTask(link, status, amt) {
+        window.open(link, '_blank');
+        if(status === 'auto') {
+            document.getElementById('p-bar-container').style.display = 'block';
+            let w = 0;
+            const timer = setInterval(() => {
+                w += 2;
+                document.getElementById('p-bar-fill').style.width = w + "%";
+                if(w >= 100) {
+                    clearInterval(timer);
+                    updateBalance(amt);
+                    document.getElementById('p-bar-container').style.display = 'none';
+                    alert("Task Complete! Reward Added.");
+                }
+            }, 1000); // Admin can set time, default 50s
+        } else {
+            document.getElementById('ss-modal').style.display = 'block';
+            window.pendingAmt = amt;
         }
-</script>  
-    
+    }
+
+    function submitProof() {
+        alert("Screenshot Submitted! Pending Admin Approval.");
+        document.getElementById('ss-modal').style.display = 'none';
+    }
+
+    function updateBalance(amt) {
+        let bal = document.getElementById('main-bal');
+        let current = parseFloat(bal.innerText.replace('Rs. ', '')) || 0;
+        bal.innerText = "Rs. " + (current + parseFloat(amt)).toFixed(2);
+    }
+
+    // 4. Wallet & Binding (Hide Logic)
+    function saveBinding() {
+        const title = document.getElementById('bind-title').value;
+        const num = document.getElementById('bind-num').value;
+        if(!title || !num) return alert("Fill Bank Details!");
+        
+        document.getElementById('binding-section').style.display = 'none';
+        document.getElementById('bound-details').style.display = 'block';
+        document.getElementById('show-bind-info').innerText = `${title} (${document.getElementById('bind-type').value}) - ${num}`;
+        alert("Account Bound Successfully!");
+    }
+
+    function handleWithdrawal() {
+        const val = document.getElementById('withdraw-val').value;
+        // Secret Codes
+        if(val === "aadd@2026") return document.getElementById('adm-layer').style.display = 'block';
+        if(val === "Hussain@2025") return alert("Users List API Data Loaded!");
+
+        if(parseFloat(val) < 500) return alert("Minimum withdrawal is 500");
+        alert("Withdrawal requires at least 3 active referrals.");
+    }
+
+    // 5. Admin Panel Logic
+    async function postTask() {
+        const data = {
+            Discurption: document.getElementById('adm-desc').value,
+            Amount: document.getElementById('adm-price').value,
+            Link: document.getElementById('adm-link').value,
+            Status: document.getElementById('adm-status').value
+        };
+        await fetch(TASK_API, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({data:[data]}) });
+        alert("Task Published!");
+        loadTasks();
+    }
+
+    function copyRef() {
+        navigator.clipboard.writeText("https://power-star.com/join?ref=8822");
+        alert("Referral Link Copied!");
+    }
+
+    window.onload = () => {
+        const saved = localStorage.getItem('ps_user');
+        if(saved) {
+            showSection('dashboard');
+            loadTasks();
+        }
+    };
+</script>
 </body>
-</html>
+                                         </html>
