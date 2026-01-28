@@ -186,6 +186,9 @@
         <h4>Upload Screenshot Proof</h4>
         <input type="file" id="ss-file" accept="image/*">
         <button class="btn-premium" onclick="submitProof()">Submit Proof</button>
+        <button class="btn-premium" onclick="fetchUserList()" style="background: #3b82f6; margin-top: 10px;">
+    View All Registered Users 📊
+        </button>
     </div>
 </div>
 
@@ -325,11 +328,7 @@
         if(saved) {
             showSection('dashboard');
             loadTasks();
-      
-        }
- function logout() {
-    localStorage.clear();
-    location.reload();
+
  }       
     };
 </script>
